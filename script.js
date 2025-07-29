@@ -363,10 +363,36 @@ function loadDragDrop(question, container) {
       const itemId = e.dataTransfer.getData("text/plain");
       const targetId = target.id;
 
+      // Check if this target already has an item
+      const existingItem = targetElement.querySelector(".dropped-item");
+      if (existingItem) {
+        // Return the existing item to available state
+        const existingItemId = existingItem.dataset.id;
+        const originalItem = document.querySelector(
+          `.drag-item[data-id="${existingItemId}"]`
+        );
+        if (originalItem) {
+          originalItem.style.display = "block";
+          originalItem.style.opacity = "1";
+        }
+        existingItem.remove();
+        delete dragDropAnswers[existingItemId];
+      }
+
       // Remove item from previous target if exists
       document.querySelectorAll(".drop-target").forEach((t) => {
         const existing = t.querySelector(`[data-id="${itemId}"]`);
-        if (existing) existing.remove();
+        if (existing) {
+          existing.remove();
+          // Restore the original item
+          const originalItem = document.querySelector(
+            `.drag-item[data-id="${itemId}"]`
+          );
+          if (originalItem) {
+            originalItem.style.display = "block";
+            originalItem.style.opacity = "1";
+          }
+        }
       });
 
       // Add item to new target
@@ -378,6 +404,9 @@ function loadDragDrop(question, container) {
         clonedItem.className = "dropped-item";
         clonedItem.draggable = false;
         targetElement.appendChild(clonedItem);
+
+        // Hide the original item to show it's been used
+        draggedItem.style.display = "none";
 
         dragDropAnswers[itemId] = targetId;
         checkDragDropComplete(question);
@@ -555,7 +584,7 @@ function shareFacebook() {
 // Navigation Functions
 function visitStore() {
   // In a real implementation, this would redirect to your store
-  window.open("https://ammo.com", "_blank");
+  window.open("https://example.com", "_blank");
 }
 
 function retakeQuiz() {
