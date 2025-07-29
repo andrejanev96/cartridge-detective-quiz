@@ -345,6 +345,31 @@ body {
   font-size: 1.2rem;
   font-weight: bold;
   color: #bf9400;
+  margin-bottom: 20px;
+}
+
+.slider-presets {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 15px;
+}
+
+.slider-preset-btn {
+  background: #2c2c2c;
+  border: 1px solid #464648;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  transition: all 0.2s ease;
+}
+
+.slider-preset-btn:hover {
+  background: #bf9400;
+  border-color: #bf9400;
 }
 
 /* Drag and Drop Styles */

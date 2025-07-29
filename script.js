@@ -1,125 +1,132 @@
-// Quiz Data with Multiple Question Types
-const quizData = [
-  {
-    type: "multiple-choice",
-    question: "What does the '.223' in .223 Remington refer to?",
-    answers: [
-      "The bullet diameter in inches",
-      "The case length in millimeters",
-      "The grain weight of the bullet",
-      "The year it was developed",
-    ],
-    correct: 0,
-  },
-  {
-    type: "image-multiple-choice",
-    question: "Identify this cartridge based on the image:",
-    image:
-      "https://upload.wikimedia.org/wikipedia/commons/5/56/.308_Winchester_FMJSP.jpg",
-    answers: [
-      ".308 Winchester",
-      ".30-06 Springfield",
-      "7.62x39mm",
-      ".300 Winchester Magnum",
-    ],
-    correct: 0,
-  },
-  {
-    type: "true-false",
-    question:
-      "The .45 ACP cartridge has more stopping power than the 9mm Parabellum.",
-    correct: true,
-  },
-  {
-    type: "text-input",
-    question:
-      "What caliber is commonly used in the AR-15 platform? (Enter the decimal caliber, e.g., .223)",
-    correct: ".223",
-    acceptableAnswers: [".223", "223", ".223 Remington", "5.56"],
-  },
-  {
-    type: "slider",
-    question:
-      "What is the approximate muzzle velocity of a .308 Winchester round?",
-    min: 1500,
-    max: 3500,
-    unit: "fps",
-    correct: 2700,
-    tolerance: 200,
-  },
-  {
-    type: "drag-drop",
-    question: "Match each cartridge to its typical use:",
-    items: [
-      { id: "9mm", text: "9mm Parabellum" },
-      { id: "308", text: ".308 Winchester" },
-      { id: "22lr", text: ".22 Long Rifle" },
-    ],
-    targets: [
-      { id: "handgun", text: "Handgun Defense" },
-      { id: "hunting", text: "Big Game Hunting" },
-      { id: "plinking", text: "Target Practice/Plinking" },
-    ],
-    correctMatches: {
-      "9mm": "handgun",
-      308: "hunting",
-      "22lr": "plinking",
+// Quiz Data - will be loaded from JSON file
+let quizData = [];
+let allQuestions = {};
+
+// Load questions from JSON file
+async function loadQuestions() {
+  try {
+    const response = await fetch("assets/data/questions.json");
+    allQuestions = await response.json();
+
+    // Generate randomized quiz from question pool
+    generateQuiz();
+  } catch (error) {
+    console.error("Error loading questions:", error);
+    // Fallback to embedded questions if JSON fails
+    loadFallbackQuestions();
+  }
+}
+
+// Generate a randomized quiz based on difficulty progression
+function generateQuiz() {
+  const settings = allQuestions.settings;
+  quizData = [];
+
+  // Add questions from each difficulty level
+  ["easy", "medium", "hard"].forEach((difficulty) => {
+    const questionsNeeded = settings.questionsPerDifficulty[difficulty];
+    const availableQuestions = [...allQuestions[difficulty]]; // Copy array
+
+    // Randomly select questions from this difficulty
+    for (let i = 0; i < questionsNeeded && availableQuestions.length > 0; i++) {
+      const randomIndex = Math.floor(Math.random() * availableQuestions.length);
+      const selectedQuestion = availableQuestions.splice(randomIndex, 1)[0];
+      quizData.push(selectedQuestion);
+    }
+  });
+}
+
+// Fallback questions if JSON loading fails
+function loadFallbackQuestions() {
+  quizData = [
+    {
+      type: "multiple-choice",
+      question: "What does 'FMJ' stand for in ammunition terminology?",
+      answers: [
+        "Full Metal Jacket",
+        "Fast Moving Jet",
+        "Final Mass Junction",
+        "Flat Metal Joint",
+      ],
+      correct: 0,
     },
-  },
-  {
-    type: "multiple-choice",
-    question: "Which of these is considered a 'magnum' cartridge?",
-    answers: ["9mm Parabellum", ".45 ACP", ".357 Magnum", ".38 Special"],
-    correct: 2,
-  },
-  {
-    type: "multiple-choice",
-    question: "What does 'FMJ' stand for in ammunition terminology?",
-    answers: [
-      "Full Metal Jacket",
-      "Fast Moving Jet",
-      "Final Mass Junction",
-      "Flat Metal Joint",
-    ],
-    correct: 0,
-  },
-  {
-    type: "text-input",
-    question: "What does 'MOA' stand for? (Enter the full phrase)",
-    correct: "Minute of Angle",
-    acceptableAnswers: [
-      "Minute of Angle",
-      "minute of angle",
-      "Minutes of Angle",
-      "minutes of angle",
-    ],
-  },
-  {
-    type: "slider",
-    question: "What is the typical bullet weight for .45 ACP ammunition?",
-    min: 180,
-    max: 260,
-    unit: "grains",
-    correct: 230,
-    tolerance: 15,
-  },
-  {
-    type: "true-false",
-    question: "The .30-06 cartridge was adopted by the U.S. military in 1906.",
-    correct: true,
-  },
-  {
-    type: "multiple-choice",
-    question: "The .50 BMG cartridge was originally designed for use in what?",
-    answers: [
-      "Sniper rifles",
-      "Machine guns",
-      "Artillery pieces",
-      "Tank cannons",
-    ],
-    correct: 1,
-  },
-];
+    {
+      type: "true-false",
+      question:
+        "The 9mm Parabellum is one of the most common handgun cartridges in the world.",
+      correct: true,
+    },
+    {
+      type: "multiple-choice",
+      question: "What does the '.223' in .223 Remington refer to?",
+      answers: [
+        "The bullet diameter in inches",
+        "The case length in millimeters",
+        "The grain weight of the bullet",
+        "The year it was developed",
+      ],
+      correct: 0,
+    },
+    {
+      type: "slider",
+      question: "What is the typical bullet weight for .45 ACP ammunition?",
+      min: 180,
+      max: 260,
+      unit: "grains",
+      correct: 230,
+      tolerance: 15,
+      step: 5,
+    },
+    {
+      type: "text-input",
+      question: "What does 'MOA' stand for? (Enter the full phrase)",
+      correct: "Minute of Angle",
+      acceptableAnswers: [
+        "Minute of Angle",
+        "minute of angle",
+        "Minutes of Angle",
+        "minutes of angle",
+      ],
+    },
+    {
+      type: "drag-drop",
+      question: "Match each cartridge to its typical use:",
+      items: [
+        { id: "9mm", text: "9mm Parabellum" },
+        { id: "308", text: ".308 Winchester" },
+        { id: "22lr", text: ".22 Long Rifle" },
+      ],
+      targets: [
+        { id: "handgun", text: "Handgun Defense" },
+        { id: "hunting", text: "Big Game Hunting" },
+        { id: "plinking", text: "Target Practice/Plinking" },
+      ],
+      correctMatches: {
+        "9mm": "handgun",
+        308: "hunting",
+        "22lr": "plinking",
+      },
+    },
+    {
+      type: "multiple-choice",
+      question:
+        "The .50 BMG cartridge was originally designed for use in what?",
+      answers: [
+        "Sniper rifles",
+        "Machine guns",
+        "Artillery pieces",
+        "Tank cannons",
+      ],
+      correct: 1,
+    },
+    {
+      type: "true-false",
+      question:
+        "The .30-06 cartridge was adopted by the U.S. military in 1906.",
+      correct: true,
+    },
+  ];
+}
 
 // Tier definitions
 const tiers = [
@@ -302,11 +309,16 @@ function loadSlider(question, container) {
   slider.className = "slider";
   slider.min = question.min;
   slider.max = question.max;
+  slider.step = question.step || 10; // Use step from question data, default to 10
   slider.value = Math.round((question.min + question.max) / 2);
 
   const valueDisplay = document.createElement("div");
   valueDisplay.className = "slider-value";
   valueDisplay.textContent = `${slider.value} ${question.unit}`;
+
+  // Add click-to-set functionality
+  const sliderTrack = document.createElement("div");
+  sliderTrack.className = "slider-track-clickable";
 
   slider.oninput = (e) => {
     const value = parseInt(e.target.value);
@@ -314,9 +326,43 @@ function loadSlider(question, container) {
     handleSliderInput(value);
   };
 
+  // Add preset value buttons for easier selection
+  const presetsContainer = document.createElement("div");
+  presetsContainer.className = "slider-presets";
+
+  // Generate preset values
+  const step = question.step || 10;
+  const presetValues = [];
+  for (
+    let val = question.min;
+    val <= question.max;
+    val += Math.max(step * 10, 100)
+  ) {
+    presetValues.push(val);
+  }
+  // Always include the correct answer as a preset for testing
+  if (!presetValues.includes(question.correct)) {
+    presetValues.push(question.correct);
+    presetValues.sort((a, b) => a - b);
+  }
+
+  presetValues.forEach((presetValue) => {
+    const presetBtn = document.createElement("button");
+    presetBtn.type = "button";
+    presetBtn.className = "slider-preset-btn";
+    presetBtn.textContent = `${presetValue}`;
+    presetBtn.onclick = () => {
+      slider.value = presetValue;
+      valueDisplay.textContent = `${presetValue} ${question.unit}`;
+      handleSliderInput(presetValue);
+    };
+    presetsContainer.appendChild(presetBtn);
+  });
+
   sliderContainer.appendChild(sliderLabel);
   sliderContainer.appendChild(slider);
   sliderContainer.appendChild(valueDisplay);
+  sliderContainer.appendChild(presetsContainer);
   container.appendChild(sliderContainer);
 
   // Set initial value
@@ -735,9 +781,12 @@ function resetQuestionState() {
 }
 
 // Initialize on page load
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
   // Ensure landing section is shown by default
   showSection("landing");
+
+  // Pre-load questions for faster quiz start
+  await loadQuestions();
 
   // Track page load
   trackQuizEvent("quiz_page_loaded");

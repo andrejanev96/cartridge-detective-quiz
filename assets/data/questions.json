@@ -1,0 +1,133 @@
+{
+  "easy": [
+    {
+      "type": "multiple-choice",
+      "question": "What does 'FMJ' stand for in ammunition terminology?",
+      "answers": [
+        "Full Metal Jacket",
+        "Fast Moving Jet",
+        "Final Mass Junction",
+        "Flat Metal Joint"
+      ],
+      "correct": 0
+    },
+    {
+      "type": "true-false",
+      "question": "The 9mm Parabellum is one of the most common handgun cartridges in the world.",
+      "correct": true
+    },
+    {
+      "type": "multiple-choice",
+      "question": "Which of these is considered a 'magnum' cartridge?",
+      "answers": [
+        "9mm Parabellum",
+        ".45 ACP",
+        ".357 Magnum",
+        ".38 Special"
+      ],
+      "correct": 2
+    },
+    {
+      "type": "text-input",
+      "question": "What does 'ACP' stand for? (Enter the full phrase)",
+      "correct": "Automatic Colt Pistol",
+      "acceptableAnswers": ["Automatic Colt Pistol", "automatic colt pistol"]
+    }
+  ],
+  "medium": [
+    {
+      "type": "multiple-choice",
+      "question": "What does the '.223' in .223 Remington refer to?",
+      "answers": [
+        "The bullet diameter in inches",
+        "The case length in millimeters",
+        "The grain weight of the bullet",
+        "The year it was developed"
+      ],
+      "correct": 0
+    },
+    {
+      "type": "slider",
+      "question": "What is the typical bullet weight for .45 ACP ammunition?",
+      "min": 180,
+      "max": 260,
+      "unit": "grains",
+      "correct": 230,
+      "tolerance": 15,
+      "step": 5
+    },
+    {
+      "type": "image-multiple-choice",
+      "question": "Identify this cartridge based on the image:",
+      "image": "assets/images/cartridges/308-winchester.jpg",
+      "answers": [
+        ".308 Winchester",
+        ".30-06 Springfield",
+        "7.62x39mm",
+        ".300 Winchester Magnum"
+      ],
+      "correct": 0
+    },
+    {
+      "type": "drag-drop",
+      "question": "Match each cartridge to its typical use:",
+      "items": [
+        { "id": "9mm", "text": "9mm Parabellum" },
+        { "id": "308", "text": ".308 Winchester" },
+        { "id": "22lr", "text": ".22 Long Rifle" }
+      ],
+      "targets": [
+        { "id": "handgun", "text": "Handgun Defense" },
+        { "id": "hunting", "text": "Big Game Hunting" },
+        { "id": "plinking", "text": "Target Practice/Plinking" }
+      ],
+      "correctMatches": {
+        "9mm": "handgun",
+        "308": "hunting",
+        "22lr": "plinking"
+      }
+    }
+  ],
+  "hard": [
+    {
+      "type": "slider",
+      "question": "What is the approximate muzzle velocity of a .308 Winchester round?",
+      "min": 2200,
+      "max": 3200,
+      "unit": "fps",
+      "correct": 2700,
+      "tolerance": 100,
+      "step": 50
+    },
+    {
+      "type": "text-input",
+      "question": "What does 'MOA' stand for? (Enter the full phrase)",
+      "correct": "Minute of Angle",
+      "acceptableAnswers": ["Minute of Angle", "minute of angle", "Minutes of Angle", "minutes of angle"]
+    },
+    {
+      "type": "multiple-choice",
+      "question": "The primary difference between .308 Winchester and 7.62x51mm NATO is:",
+      "answers": [
+        "Bullet diameter",
+        "Case length",
+        "Chamber pressure specifications",
+        "They are identical"
+      ],
+      "correct": 2
+    },
+    {
+      "type": "true-false",
+      "question": "The .30-06 cartridge was adopted by the U.S. military in 1906.",
+      "correct": true
+    }
+  ],
+  "settings": {
+    "questionsPerQuiz": 8,
+    "questionsPerDifficulty": {
+      "easy": 3,
+      "medium": 3,
+      "hard": 2
+    }
+  }
+}
