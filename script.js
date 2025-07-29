@@ -522,14 +522,26 @@ function checkDragDropComplete(question) {
 }
 
 // Handle Answer Selection
-function selectAnswer(index) {
-  selectedAnswer = index;
+function selectAnswer(answer) {
+  selectedAnswer = answer; // This will now store either a number or boolean
 
-  // Update UI
+  // Update UI for answer options
   const answerOptions = document.querySelectorAll(".answer-option");
   answerOptions.forEach((option, i) => {
     option.classList.remove("selected");
-    if (i === index) {
+
+    // For true/false questions, match by boolean value
+    if (typeof answer === "boolean") {
+      const optionText = option.textContent.toLowerCase();
+      if (
+        (answer === true && optionText === "true") ||
+        (answer === false && optionText === "false")
+      ) {
+        option.classList.add("selected");
+      }
+    }
+    // For multiple choice, match by index
+    else if (i === answer) {
       option.classList.add("selected");
     }
   });
