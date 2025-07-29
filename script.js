@@ -34,6 +34,12 @@ function generateQuiz() {
       quizData.push(selectedQuestion);
     }
   });
+
+  // Update question count after quiz is generated
+  const questionCountElement = document.getElementById("questionCount");
+  if (questionCountElement) {
+    questionCountElement.textContent = quizData.length;
+  }
 }
 
 // Fallback questions if JSON loading fails
@@ -941,7 +947,6 @@ function resetQuestionState() {
 document.addEventListener("DOMContentLoaded", async () => {
   // Ensure landing section is shown by default
   showSection("landing");
-  document.getElementById("questionCount").textContent = quizData.length;
 
   // Pre-load questions for faster quiz start
   await loadQuestions();
