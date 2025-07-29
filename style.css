@@ -318,6 +318,7 @@ body {
   background: #2c2c2c;
   outline: none;
   margin-bottom: 15px;
+  appearance: none;
   -webkit-appearance: none;
 }
 
