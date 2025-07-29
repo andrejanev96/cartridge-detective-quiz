@@ -678,6 +678,7 @@ function showResults() {
   // Display score
   document.getElementById("finalScore").textContent = score;
   document.getElementById("correctCount").textContent = score;
+  document.getElementById("scoreTotal").textContent = quizData.length;
 
   // Calculate accuracy
   const accuracy = Math.round((score / quizData.length) * 100);
