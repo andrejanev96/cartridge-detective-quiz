@@ -1,6 +1,7 @@
-// Quiz Data
+// Quiz Data with Multiple Question Types
 const quizData = [
   {
+    type: "multiple-choice",
     question: "What does the '.223' in .223 Remington refer to?",
     answers: [
       "The bullet diameter in inches",
@@ -11,11 +12,68 @@ const quizData = [
     correct: 0,
   },
   {
+    type: "image-multiple-choice",
+    question: "Identify this cartridge based on the image:",
+    image:
+      "https://via.placeholder.com/400x200/333333/ffffff?text=.308+Winchester+Cartridge",
+    answers: [
+      ".308 Winchester",
+      ".30-06 Springfield",
+      "7.62x39mm",
+      ".300 Winchester Magnum",
+    ],
+    correct: 0,
+  },
+  {
+    type: "true-false",
+    question:
+      "The .45 ACP cartridge has more stopping power than the 9mm Parabellum.",
+    correct: true,
+  },
+  {
+    type: "text-input",
+    question:
+      "What caliber is commonly used in the AR-15 platform? (Enter the decimal caliber, e.g., .223)",
+    correct: ".223",
+    acceptableAnswers: [".223", "223", ".223 Remington", "5.56"],
+  },
+  {
+    type: "slider",
+    question:
+      "What is the approximate muzzle velocity of a .308 Winchester round?",
+    min: 1500,
+    max: 3500,
+    unit: "fps",
+    correct: 2700,
+    tolerance: 200,
+  },
+  {
+    type: "drag-drop",
+    question: "Match each cartridge to its typical use:",
+    items: [
+      { id: "9mm", text: "9mm Parabellum" },
+      { id: "308", text: ".308 Winchester" },
+      { id: "22lr", text: ".22 Long Rifle" },
+    ],
+    targets: [
+      { id: "handgun", text: "Handgun Defense" },
+      { id: "hunting", text: "Big Game Hunting" },
+      { id: "plinking", text: "Target Practice/Plinking" },
+    ],
+    correctMatches: {
+      "9mm": "handgun",
+      308: "hunting",
+      "22lr": "plinking",
+    },
+  },
+  {
+    type: "multiple-choice",
     question: "Which of these is considered a 'magnum' cartridge?",
     answers: ["9mm Parabellum", ".45 ACP", ".357 Magnum", ".38 Special"],
     correct: 2,
   },
   {
+    type: "multiple-choice",
     question: "What does 'FMJ' stand for in ammunition terminology?",
     answers: [
       "Full Metal Jacket",
@@ -26,65 +84,32 @@ const quizData = [
     correct: 0,
   },
   {
-    question:
-      "The '.30-06' cartridge was adopted by the U.S. military in what year?",
-    answers: ["1903", "1906", "1911", "1918"],
-    correct: 1,
-  },
-  {
-    question:
-      "What is the primary difference between .308 Winchester and 7.62x51mm NATO?",
-    answers: [
-      "Bullet diameter",
-      "Case length",
-      "Chamber pressure specifications",
-      "They are identical",
-    ],
-    correct: 2,
-  },
-  {
-    question: "Which component of a cartridge contains the explosive compound?",
-    answers: ["Bullet", "Case", "Primer", "Powder"],
-    correct: 2,
-  },
-  {
-    question: "What does '+P' designation mean on ammunition?",
-    answers: [
-      "Extra powder charge",
-      "Higher pressure than standard",
-      "Plus power rating",
-      "Improved accuracy",
-    ],
-    correct: 1,
-  },
-  {
-    question: "The AK-47 typically fires which cartridge?",
-    answers: ["7.62x39mm", "7.62x51mm", "5.45x39mm", "5.56x45mm"],
-    correct: 0,
-  },
-  {
-    question:
-      "What is the approximate muzzle velocity of a standard .45 ACP round?",
-    answers: ["1,200 fps", "850 fps", "1,500 fps", "650 fps"],
-    correct: 1,
-  },
-  {
-    question:
-      "Which of these is NOT a common bullet weight for 9mm ammunition?",
-    answers: ["115 grain", "124 grain", "147 grain", "180 grain"],
-    correct: 3,
-  },
-  {
-    question: "What does 'MOA' stand for in shooting terminology?",
-    answers: [
-      "Method of Accuracy",
+    type: "text-input",
+    question: "What does 'MOA' stand for? (Enter the full phrase)",
+    correct: "Minute of Angle",
+    acceptableAnswers: [
       "Minute of Angle",
-      "Maximum Operating Accuracy",
-      "Measured Optical Alignment",
+      "minute of angle",
+      "Minutes of Angle",
+      "minutes of angle",
     ],
-    correct: 1,
   },
   {
+    type: "slider",
+    question: "What is the typical bullet weight for .45 ACP ammunition?",
+    min: 180,
+    max: 260,
+    unit: "grains",
+    correct: 230,
+    tolerance: 15,
+  },
+  {
+    type: "true-false",
+    question: "The .30-06 cartridge was adopted by the U.S. military in 1906.",
+    correct: true,
+  },
+  {
+    type: "multiple-choice",
     question: "The .50 BMG cartridge was originally designed for use in what?",
     answers: [
       "Sniper rifles",
@@ -140,6 +165,9 @@ let currentQuestion = 0;
 let score = 0;
 let selectedAnswer = null;
 let userEmail = "";
+let dragDropAnswers = {};
+let userTextAnswer = "";
+let sliderValue = null;
 
 // DOM Elements
 const sections = {
@@ -179,21 +207,205 @@ function loadQuestion() {
   // Load question
   document.getElementById("questionTitle").textContent = question.question;
 
-  // Load answers
+  // Handle question image
+  const questionImageDiv = document.getElementById("questionImage");
+  const questionImg = document.getElementById("questionImg");
+  if (question.image) {
+    questionImg.src = question.image;
+    questionImageDiv.style.display = "block";
+  } else {
+    questionImageDiv.style.display = "none";
+  }
+
+  // Load answers based on question type
   const answersContainer = document.getElementById("answersContainer");
   answersContainer.innerHTML = "";
 
+  switch (question.type) {
+    case "multiple-choice":
+    case "image-multiple-choice":
+      loadMultipleChoice(question, answersContainer);
+      break;
+    case "true-false":
+      loadTrueFalse(question, answersContainer);
+      break;
+    case "text-input":
+      loadTextInput(question, answersContainer);
+      break;
+    case "slider":
+      loadSlider(question, answersContainer);
+      break;
+    case "drag-drop":
+      loadDragDrop(question, answersContainer);
+      break;
+  }
+
+  // Reset state
+  selectedAnswer = null;
+  userTextAnswer = "";
+  sliderValue = null;
+  dragDropAnswers = {};
+  document.getElementById("nextBtn").disabled = true;
+}
+
+function loadMultipleChoice(question, container) {
   question.answers.forEach((answer, index) => {
     const answerElement = document.createElement("div");
     answerElement.className = "answer-option";
     answerElement.textContent = answer;
     answerElement.onclick = () => selectAnswer(index);
-    answersContainer.appendChild(answerElement);
+    container.appendChild(answerElement);
+  });
+}
+
+function loadTrueFalse(question, container) {
+  const trueOption = document.createElement("div");
+  trueOption.className = "answer-option";
+  trueOption.textContent = "True";
+  trueOption.onclick = () => selectAnswer(true);
+
+  const falseOption = document.createElement("div");
+  falseOption.className = "answer-option";
+  falseOption.textContent = "False";
+  falseOption.onclick = () => selectAnswer(false);
+
+  container.appendChild(trueOption);
+  container.appendChild(falseOption);
+}
+
+function loadTextInput(question, container) {
+  const inputContainer = document.createElement("div");
+  inputContainer.className = "text-input-container";
+
+  const input = document.createElement("input");
+  input.type = "text";
+  input.className = "text-input";
+  input.placeholder = "Enter your answer...";
+  input.oninput = (e) => handleTextInput(e.target.value);
+
+  inputContainer.appendChild(input);
+  container.appendChild(inputContainer);
+
+  setTimeout(() => input.focus(), 100);
+}
+
+function loadSlider(question, container) {
+  const sliderContainer = document.createElement("div");
+  sliderContainer.className = "slider-container";
+
+  const sliderLabel = document.createElement("div");
+  sliderLabel.className = "slider-label";
+  sliderLabel.textContent = `Range: ${question.min} - ${question.max} ${question.unit}`;
+
+  const slider = document.createElement("input");
+  slider.type = "range";
+  slider.className = "slider";
+  slider.min = question.min;
+  slider.max = question.max;
+  slider.value = Math.round((question.min + question.max) / 2);
+
+  const valueDisplay = document.createElement("div");
+  valueDisplay.className = "slider-value";
+  valueDisplay.textContent = `${slider.value} ${question.unit}`;
+
+  slider.oninput = (e) => {
+    const value = parseInt(e.target.value);
+    valueDisplay.textContent = `${value} ${question.unit}`;
+    handleSliderInput(value);
+  };
+
+  sliderContainer.appendChild(sliderLabel);
+  sliderContainer.appendChild(slider);
+  sliderContainer.appendChild(valueDisplay);
+  container.appendChild(sliderContainer);
+
+  // Set initial value
+  handleSliderInput(parseInt(slider.value));
+}
+
+function loadDragDrop(question, container) {
+  const dragDropContainer = document.createElement("div");
+  dragDropContainer.className = "drag-drop-container";
+
+  const itemsContainer = document.createElement("div");
+  itemsContainer.className = "drag-items-container";
+  itemsContainer.innerHTML = "<h4>Drag these items:</h4>";
+
+  const targetsContainer = document.createElement("div");
+  targetsContainer.className = "drag-targets-container";
+  targetsContainer.innerHTML = "<h4>To these categories:</h4>";
+
+  // Create draggable items
+  question.items.forEach((item) => {
+    const itemElement = document.createElement("div");
+    itemElement.className = "drag-item";
+    itemElement.textContent = item.text;
+    itemElement.draggable = true;
+    itemElement.dataset.id = item.id;
+
+    itemElement.ondragstart = (e) => {
+      e.dataTransfer.setData("text/plain", item.id);
+    };
+
+    itemsContainer.appendChild(itemElement);
   });
 
-  // Reset state
-  selectedAnswer = null;
-  document.getElementById("nextBtn").disabled = true;
+  // Create drop targets
+  question.targets.forEach((target) => {
+    const targetElement = document.createElement("div");
+    targetElement.className = "drop-target";
+    targetElement.textContent = target.text;
+    targetElement.dataset.id = target.id;
+
+    targetElement.ondragover = (e) => e.preventDefault();
+    targetElement.ondrop = (e) => {
+      e.preventDefault();
+      const itemId = e.dataTransfer.getData("text/plain");
+      const targetId = target.id;
+
+      // Remove item from previous target if exists
+      document.querySelectorAll(".drop-target").forEach((t) => {
+        const existing = t.querySelector(`[data-id="${itemId}"]`);
+        if (existing) existing.remove();
+      });
+
+      // Add item to new target
+      const draggedItem = document.querySelector(
+        `.drag-item[data-id="${itemId}"]`
+      );
+      if (draggedItem) {
+        const clonedItem = draggedItem.cloneNode(true);
+        clonedItem.className = "dropped-item";
+        clonedItem.draggable = false;
+        targetElement.appendChild(clonedItem);
+
+        dragDropAnswers[itemId] = targetId;
+        checkDragDropComplete(question);
+      }
+    };
+
+    targetsContainer.appendChild(targetElement);
+  });
+
+  dragDropContainer.appendChild(itemsContainer);
+  dragDropContainer.appendChild(targetsContainer);
+  container.appendChild(dragDropContainer);
+}
+
+function handleTextInput(value) {
+  userTextAnswer = value.trim();
+  document.getElementById("nextBtn").disabled = userTextAnswer === "";
+}
+
+function handleSliderInput(value) {
+  sliderValue = value;
+  document.getElementById("nextBtn").disabled = false;
+}
+
+function checkDragDropComplete(question) {
+  const isComplete =
+    question.items.length === Object.keys(dragDropAnswers).length;
+  document.getElementById("nextBtn").disabled = !isComplete;
 }
 
 // Handle Answer Selection
@@ -215,10 +427,36 @@ function selectAnswer(index) {
 
 // Move to Next Question
 function nextQuestion() {
-  if (selectedAnswer === null) return;
+  const question = quizData[currentQuestion];
+  let isCorrect = false;
 
-  // Check if answer is correct
-  if (selectedAnswer === quizData[currentQuestion].correct) {
+  // Check answer based on question type
+  switch (question.type) {
+    case "multiple-choice":
+    case "image-multiple-choice":
+      isCorrect = selectedAnswer === question.correct;
+      break;
+    case "true-false":
+      isCorrect = selectedAnswer === question.correct;
+      break;
+    case "text-input":
+      isCorrect = question.acceptableAnswers.some(
+        (acceptable) =>
+          acceptable.toLowerCase() === userTextAnswer.toLowerCase()
+      );
+      break;
+    case "slider":
+      isCorrect =
+        Math.abs(sliderValue - question.correct) <= question.tolerance;
+      break;
+    case "drag-drop":
+      isCorrect = Object.keys(question.correctMatches).every(
+        (itemId) => dragDropAnswers[itemId] === question.correctMatches[itemId]
+      );
+      break;
+  }
+
+  if (isCorrect) {
     score++;
   }
 
@@ -458,6 +696,15 @@ function submitEmail() {
   showResultsWithEmail();
 }
 
+// Reset state for new questions
+function resetQuestionState() {
+  selectedAnswer = null;
+  userTextAnswer = "";
+  sliderValue = null;
+  dragDropAnswers = {};
+  document.getElementById("nextBtn").disabled = true;
+}
+
 // Initialize on page load
 document.addEventListener("DOMContentLoaded", () => {
   // Ensure landing section is shown by default
@@ -465,4 +712,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Track page load
   trackQuizEvent("quiz_page_loaded");
+
+  // Reset state
+  resetQuestionState();
 });
