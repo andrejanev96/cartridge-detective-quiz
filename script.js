@@ -15,7 +15,7 @@ const quizData = [
     type: "image-multiple-choice",
     question: "Identify this cartridge based on the image:",
     image:
-      "https://via.placeholder.com/400x200/333333/ffffff?text=.308+Winchester+Cartridge",
+      "https://upload.wikimedia.org/wikipedia/commons/5/56/.308_Winchester_FMJSP.jpg",
     answers: [
       ".308 Winchester",
       ".30-06 Springfield",
