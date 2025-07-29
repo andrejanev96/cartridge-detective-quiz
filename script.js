@@ -316,35 +316,22 @@ function loadSlider(question, container) {
   valueDisplay.className = "slider-value";
   valueDisplay.textContent = `${slider.value} ${question.unit}`;
 
-  // Add click-to-set functionality
-  const sliderTrack = document.createElement("div");
-  sliderTrack.className = "slider-track-clickable";
-
   slider.oninput = (e) => {
     const value = parseInt(e.target.value);
     valueDisplay.textContent = `${value} ${question.unit}`;
     handleSliderInput(value);
   };
 
-  // Add preset value buttons for easier selection
+  // Add smart preset buttons (logical intervals, NOT including correct answer)
   const presetsContainer = document.createElement("div");
   presetsContainer.className = "slider-presets";
 
-  // Generate preset values
-  const step = question.step || 10;
-  const presetValues = [];
-  for (
-    let val = question.min;
-    val <= question.max;
-    val += Math.max(step * 10, 100)
-  ) {
-    presetValues.push(val);
-  }
-  // Always include the correct answer as a preset for testing
-  if (!presetValues.includes(question.correct)) {
-    presetValues.push(question.correct);
-    presetValues.sort((a, b) => a - b);
-  }
+  // Generate smart preset values at logical intervals
+  const presetValues = generateSmartPresets(
+    question.min,
+    question.max,
+    question.unit
+  );
 
   presetValues.forEach((presetValue) => {
     const presetBtn = document.createElement("button");
@@ -367,6 +354,51 @@ function loadSlider(question, container) {
 
   // Set initial value
   handleSliderInput(parseInt(slider.value));
+}
+
+// Generate smart preset values at logical intervals
+function generateSmartPresets(min, max, unit) {
+  const range = max - min;
+  let interval;
+
+  // Determine logical intervals based on range and unit type
+  if (unit === "fps") {
+    // For velocity: use 200 fps intervals
+    interval = 200;
+  } else if (unit === "grains") {
+    // For bullet weight: use 20 grain intervals
+    interval = 20;
+  } else if (range > 1000) {
+    // Large ranges: use 200 unit intervals
+    interval = 200;
+  } else if (range > 100) {
+    // Medium ranges: use 25 unit intervals
+    interval = 25;
+  } else {
+    // Small ranges: use 10 unit intervals
+    interval = 10;
+  }
+
+  const presets = [];
+
+  // Always include the min and max values
+  presets.push(min);
+
+  // Add interval values
+  for (let val = min + interval; val < max; val += interval) {
+    // Round to nearest logical number
+    const roundedVal = Math.round(val / interval) * interval;
+    if (roundedVal > min && roundedVal < max && !presets.includes(roundedVal)) {
+      presets.push(roundedVal);
+    }
+  }
+
+  // Always include the max value
+  if (!presets.includes(max)) {
+    presets.push(max);
+  }
+
+  return presets.sort((a, b) => a - b);
 }
 
 function loadDragDrop(question, container) {
