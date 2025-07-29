@@ -941,6 +941,7 @@ function resetQuestionState() {
 document.addEventListener("DOMContentLoaded", async () => {
   // Ensure landing section is shown by default
   showSection("landing");
+  document.getElementById("questionCount").textContent = quizData.length;
 
   // Pre-load questions for faster quiz start
   await loadQuestions();
