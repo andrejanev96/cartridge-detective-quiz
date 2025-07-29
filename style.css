@@ -1,4 +1,156 @@
-/* Reset and Base Styles */
+/* Explanation Styles */
+.explanation {
+  background: #1d1d1d;
+  border-radius: 8px;
+  padding: 20px;
+  margin-top: 20px;
+  border-left: 4px solid;
+}
+
+.explanation.correct {
+  border-left-color: #28a745;
+  background: rgba(40, 167, 69, 0.1);
+}
+
+.explanation.incorrect {
+  border-left-color: #dc3545;
+  background: rgba(220, 53, 69, 0.1);
+}
+
+.explanation-result {
+  font-size: 1.1rem;
+  font-weight: bold;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.result-icon {
+  font-size: 1.2rem;
+}
+
+.explanation.correct .result-icon {
+  color: #28a745;
+}
+
+.explanation.incorrect .result-icon {
+  color: #dc3545;
+}
+
+.explanation-text {
+  color: #cccccc;
+  line-height: 1.5;
+}
+
+.streak-indicator {
+  background: #bf9400;
+  color: #000;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: bold;
+  display: inline-block;
+  margin-bottom: 10px;
+}
+
+/* Achievement Styles */
+.achievements {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin: 20px 0;
+}
+
+.achievement-badge {
+  background: #1d1d1d;
+  border: 1px solid #bf9400;
+  border-radius: 20px;
+  padding: 8px 15px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+}
+
+.achievement-icon {
+  font-size: 16px;
+}
+
+.achievement-text {
+  color: #bf9400;
+  font-weight: 500;
+}
+
+/* Mobile Touch Improvements */
+@media (max-width: 768px) {
+  /* Larger touch targets */
+  .answer-option {
+    padding: 25px;
+    font-size: 16px;
+  }
+
+  .btn {
+    padding: 16px 32px;
+    font-size: 18px;
+    min-height: 50px;
+  }
+
+  .text-input {
+    padding: 18px;
+    font-size: 18px;
+    min-height: 50px;
+  }
+
+  .slider {
+    height: 12px;
+  }
+
+  .slider::-webkit-slider-thumb {
+    width: 28px;
+    height: 28px;
+  }
+
+  .slider::-moz-range-thumb {
+    width: 28px;
+    height: 28px;
+  }
+
+  .slider-preset-btn {
+    padding: 12px 16px;
+    font-size: 16px;
+    min-height: 44px;
+  }
+
+  /* Better drag and drop for mobile */
+  .drag-item {
+    padding: 16px;
+    font-size: 16px;
+    margin-bottom: 12px;
+  }
+
+  .drop-target {
+    padding: 20px;
+    min-height: 60px;
+    font-size: 16px;
+  }
+
+  /* Improved explanations on mobile */
+  .explanation {
+    padding: 16px;
+    margin-top: 15px;
+  }
+
+  .explanation-result {
+    font-size: 1rem;
+  }
+
+  .explanation-text {
+    font-size: 15px;
+    line-height: 1.4;
+  }
+} /* Reset and Base Styles */
 * {
   margin: 0;
   padding: 0;

@@ -175,6 +175,9 @@ let userEmail = "";
 let dragDropAnswers = {};
 let userTextAnswer = "";
 let sliderValue = null;
+let streak = 0;
+let maxStreak = 0;
+let questionStartTime = 0;
 
 // DOM Elements
 const sections = {
@@ -202,14 +205,17 @@ function showSection(sectionName) {
 function loadQuestion() {
   const question = quizData[currentQuestion];
 
-  // Update progress
+  // Track question start time
+  questionStartTime = Date.now();
+
+  // Update progress with category
   const progress = ((currentQuestion + 1) / quizData.length) * 100;
   document
     .getElementById("progressBar")
     .style.setProperty("--progress", `${progress}%`);
   document.getElementById("progressText").textContent = `Question ${
     currentQuestion + 1
-  } of ${quizData.length}`;
+  } of ${quizData.length} • ${question.category || "General"}`;
 
   // Load question
   document.getElementById("questionTitle").textContent = question.question;
@@ -563,14 +569,77 @@ function nextQuestion() {
       break;
   }
 
+  // Update score and streak
   if (isCorrect) {
     score++;
+    streak++;
+    if (streak > maxStreak) maxStreak = streak;
+  } else {
+    streak = 0;
   }
 
+  // Show explanation
+  showExplanation(question, isCorrect);
+}
+
+// Show explanation after answer
+function showExplanation(question, isCorrect) {
+  const answersContainer = document.getElementById("answersContainer");
+  const explanationDiv = document.createElement("div");
+  explanationDiv.className = `explanation ${
+    isCorrect ? "correct" : "incorrect"
+  }`;
+
+  const resultText = document.createElement("div");
+  resultText.className = "explanation-result";
+  resultText.innerHTML = isCorrect
+    ? `<span class="result-icon">✓</span> Correct!`
+    : `<span class="result-icon">✗</span> Incorrect`;
+
+  const explanationText = document.createElement("div");
+  explanationText.className = "explanation-text";
+  explanationText.textContent =
+    question.explanation || "No explanation available.";
+
+  // Show streak if user got it right and has a streak > 1
+  if (isCorrect && streak > 1) {
+    const streakDiv = document.createElement("div");
+    streakDiv.className = "streak-indicator";
+    streakDiv.innerHTML = `🔥 ${streak} in a row!`;
+    explanationDiv.appendChild(streakDiv);
+  }
+
+  explanationDiv.appendChild(resultText);
+  explanationDiv.appendChild(explanationText);
+
+  // Add to page
+  answersContainer.appendChild(explanationDiv);
+
+  // Update button text and add delay
+  const nextBtn = document.getElementById("nextBtn");
+  if (currentQuestion + 1 < quizData.length) {
+    nextBtn.textContent = "Next Question";
+    nextBtn.onclick = proceedToNext;
+  } else {
+    nextBtn.textContent = "Finish Quiz";
+    nextBtn.onclick = proceedToNext;
+  }
+  nextBtn.disabled = false;
+
+  // Scroll to explanation
+  explanationDiv.scrollIntoView({ behavior: "smooth", block: "nearest" });
+}
+
+// Proceed to next question or finish
+function proceedToNext() {
   currentQuestion++;
 
   if (currentQuestion < quizData.length) {
     loadQuestion();
+    // Reset button
+    const nextBtn = document.getElementById("nextBtn");
+    nextBtn.textContent = "Next Question";
+    nextBtn.onclick = nextQuestion;
   } else {
     // Quiz complete
     showSection("emailCapture");
@@ -614,21 +683,59 @@ function showResults() {
   const accuracy = Math.round((score / quizData.length) * 100);
   document.getElementById("accuracyRate").textContent = `${accuracy}%`;
 
+  // Show max streak
+  document.getElementById("maxStreak").textContent = maxStreak;
+
   // Determine tier
   const tier = getTier(score);
   document.getElementById("tierIcon").textContent = tier.icon;
   document.getElementById("tierTitle").textContent = tier.name;
   document.getElementById("tierDescription").textContent = tier.description;
 
+  // Add achievement badges
+  const achievementsDiv = document.getElementById("achievements");
+  achievementsDiv.innerHTML = "";
+
+  const achievements = getAchievements();
+  achievements.forEach((achievement) => {
+    const badgeDiv = document.createElement("div");
+    badgeDiv.className = "achievement-badge";
+    badgeDiv.innerHTML = `<span class="achievement-icon">${achievement.icon}</span><span class="achievement-text">${achievement.text}</span>`;
+    achievementsDiv.appendChild(badgeDiv);
+  });
+
   // Update tier badge color based on performance
   const tierBadge = document.getElementById("tierBadge");
-  if (score >= 10) {
+  if (score >= 7) {
     tierBadge.style.borderColor = "#bf9400"; // Gold for top performers
-  } else if (score >= 7) {
+  } else if (score >= 5) {
     tierBadge.style.borderColor = "#99161d"; // Red for good performance
   } else {
     tierBadge.style.borderColor = "#464648"; // Gray for beginners
   }
+}
+
+// Get achievements based on performance
+function getAchievements() {
+  const achievements = [];
+
+  if (score === quizData.length) {
+    achievements.push({ icon: "🎯", text: "Perfect Score!" });
+  }
+  if (maxStreak >= 5) {
+    achievements.push({ icon: "🔥", text: "Hot Streak!" });
+  }
+  if (score >= 7) {
+    achievements.push({ icon: "🏆", text: "Expert Level" });
+  }
+  if (score >= 6) {
+    achievements.push({ icon: "⭐", text: "Above Average" });
+  }
+  if (maxStreak >= 3) {
+    achievements.push({ icon: "💪", text: "Consistent" });
+  }
+
+  return achievements;
 }
 
 // Get Tier Based on Score
@@ -670,9 +777,14 @@ function retakeQuiz() {
   currentQuestion = 0;
   score = 0;
   selectedAnswer = null;
+  streak = 0;
+  maxStreak = 0;
 
   // Reset email input
   document.getElementById("emailInput").value = "";
+
+  // Generate new quiz
+  generateQuiz();
 
   // Go back to landing
   showSection("landing");

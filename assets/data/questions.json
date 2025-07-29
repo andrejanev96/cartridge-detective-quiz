@@ -2,6 +2,7 @@
   "easy": [
     {
       "type": "multiple-choice",
+      "category": "Terminology",
       "question": "What does 'FMJ' stand for in ammunition terminology?",
       "answers": [
         "Full Metal Jacket",
@@ -9,15 +10,19 @@
         "Final Mass Junction",
         "Flat Metal Joint"
       ],
-      "correct": 0
+      "correct": 0,
+      "explanation": "Full Metal Jacket (FMJ) refers to a bullet design where the lead core is encased in a harder metal shell, typically copper or brass alloy. This design improves penetration and reduces barrel fouling."
     },
     {
       "type": "true-false",
+      "category": "Popular Cartridges",
       "question": "The 9mm Parabellum is one of the most common handgun cartridges in the world.",
-      "correct": true
+      "correct": true,
+      "explanation": "Correct! The 9mm Parabellum (also called 9x19mm) is indeed one of the most widely used handgun cartridges globally, adopted by military, law enforcement, and civilian shooters worldwide."
     },
     {
       "type": "multiple-choice",
+      "category": "Cartridge Types",
       "question": "Which of these is considered a 'magnum' cartridge?",
       "answers": [
         "9mm Parabellum",
@@ -25,18 +30,22 @@
         ".357 Magnum",
         ".38 Special"
       ],
-      "correct": 2
+      "correct": 2,
+      "explanation": "The .357 Magnum is a high-powered revolver cartridge that produces significantly higher velocities and energies than standard cartridges. 'Magnum' indicates increased powder capacity and performance."
     },
     {
       "type": "text-input",
+      "category": "Terminology",
       "question": "What does 'ACP' stand for? (Enter the full phrase)",
       "correct": "Automatic Colt Pistol",
-      "acceptableAnswers": ["Automatic Colt Pistol", "automatic colt pistol"]
+      "acceptableAnswers": ["Automatic Colt Pistol", "automatic colt pistol"],
+      "explanation": "ACP stands for 'Automatic Colt Pistol,' referring to cartridges designed for Colt's semi-automatic pistols. Famous examples include .45 ACP and .380 ACP."
     }
   ],
   "medium": [
     {
       "type": "multiple-choice",
+      "category": "Cartridge Specifications",
       "question": "What does the '.223' in .223 Remington refer to?",
       "answers": [
         "The bullet diameter in inches",
@@ -44,20 +53,24 @@
         "The grain weight of the bullet",
         "The year it was developed"
       ],
-      "correct": 0
+      "correct": 0,
+      "explanation": "The '.223' refers to the approximate bullet diameter in inches (0.223 inches). This naming convention is common in American cartridge designations."
     },
     {
       "type": "slider",
+      "category": "Ballistics",
       "question": "What is the typical bullet weight for .45 ACP ammunition?",
       "min": 180,
       "max": 260,
       "unit": "grains",
       "correct": 230,
       "tolerance": 15,
-      "step": 5
+      "step": 5,
+      "explanation": "The standard .45 ACP bullet weight is 230 grains, though lighter bullets (185-200 grains) are also common. This heavy bullet contributes to the .45 ACP's reputation for stopping power."
     },
     {
       "type": "image-multiple-choice",
+      "category": "Cartridge Identification",
       "question": "Identify this cartridge based on the image:",
       "image": "assets/images/cartridges/308-winchester.jpg",
       "answers": [
@@ -66,10 +79,12 @@
         "7.62x39mm",
         ".300 Winchester Magnum"
       ],
-      "correct": 0
+      "correct": 0,
+      "explanation": "The .308 Winchester is a popular hunting and target shooting cartridge. It's nearly identical to the 7.62x51mm NATO round and offers excellent accuracy with moderate recoil."
     },
     {
       "type": "drag-drop",
+      "category": "Applications",
       "question": "Match each cartridge to its typical use:",
       "items": [
         { "id": "9mm", "text": "9mm Parabellum" },
@@ -85,28 +100,34 @@
         "9mm": "handgun",
         "308": "hunting",
         "22lr": "plinking"
-      }
+      },
+      "explanation": "Each cartridge is optimized for different purposes: 9mm for personal defense, .308 for hunting large game, and .22 LR for affordable target practice and small game."
     }
   ],
   "hard": [
     {
       "type": "slider",
+      "category": "Ballistics",
       "question": "What is the approximate muzzle velocity of a .308 Winchester round?",
       "min": 2200,
       "max": 3200,
       "unit": "fps",
       "correct": 2700,
       "tolerance": 100,
-      "step": 50
+      "step": 50,
+      "explanation": "A typical .308 Winchester with a 150-grain bullet achieves around 2700 fps muzzle velocity. Heavier bullets will be slower, lighter bullets faster."
     },
     {
       "type": "text-input",
+      "category": "Technical Terms",
       "question": "What does 'MOA' stand for? (Enter the full phrase)",
       "correct": "Minute of Angle",
-      "acceptableAnswers": ["Minute of Angle", "minute of angle", "Minutes of Angle", "minutes of angle"]
+      "acceptableAnswers": ["Minute of Angle", "minute of angle", "Minutes of Angle", "minutes of angle"],
+      "explanation": "MOA (Minute of Angle) is a unit of angular measurement used to describe accuracy. One MOA equals approximately 1 inch at 100 yards, making it perfect for describing group sizes."
     },
     {
       "type": "multiple-choice",
+      "category": "Military Cartridges",
       "question": "The primary difference between .308 Winchester and 7.62x51mm NATO is:",
       "answers": [
         "Bullet diameter",
@@ -114,12 +135,15 @@
         "Chamber pressure specifications",
         "They are identical"
       ],
-      "correct": 2
+      "correct": 2,
+      "explanation": "While the cartridges are very similar, 7.62x51mm NATO operates at slightly lower chamber pressures for safety in military firearms. .308 Winchester can be fired in 7.62 NATO chambers, but not always vice versa."
     },
     {
       "type": "true-false",
+      "category": "Military History",
       "question": "The .30-06 cartridge was adopted by the U.S. military in 1906.",
-      "correct": true
+      "correct": true,
+      "explanation": "Correct! The '.30-06' designation literally means '.30 caliber, adopted in 1906.' It served as the standard U.S. military cartridge through both World Wars and Korea."
     }
   ],
   "settings": {
