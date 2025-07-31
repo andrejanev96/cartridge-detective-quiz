@@ -1,6 +1,7 @@
 // Quiz Data - will be loaded from JSON file
 let quizData = [];
 let allQuestions = {};
+let userAnswers = []; // Store user answers for results page
 
 // Load questions from JSON file
 async function loadQuestions() {
@@ -47,6 +48,7 @@ function loadFallbackQuestions() {
   quizData = [
     {
       type: "multiple-choice",
+      category: "Terminology",
       question: "What does 'FMJ' stand for in ammunition terminology?",
       answers: [
         "Full Metal Jacket",
@@ -55,15 +57,21 @@ function loadFallbackQuestions() {
         "Flat Metal Joint",
       ],
       correct: 0,
+      explanation:
+        "Full Metal Jacket (FMJ) refers to a bullet design where the lead core is encased in a harder metal shell, typically copper or brass alloy.",
     },
     {
       type: "true-false",
+      category: "Popular Cartridges",
       question:
         "The 9mm Parabellum is one of the most common handgun cartridges in the world.",
       correct: true,
+      explanation:
+        "Correct! The 9mm Parabellum (also called 9x19mm) is indeed one of the most widely used handgun cartridges globally.",
     },
     {
       type: "multiple-choice",
+      category: "Cartridge Specifications",
       question: "What does the '.223' in .223 Remington refer to?",
       answers: [
         "The bullet diameter in inches",
@@ -72,9 +80,12 @@ function loadFallbackQuestions() {
         "The year it was developed",
       ],
       correct: 0,
+      explanation:
+        "The '.223' refers to the approximate bullet diameter in inches (0.223 inches).",
     },
     {
       type: "slider",
+      category: "Ballistics",
       question: "What is the typical bullet weight for .45 ACP ammunition?",
       min: 180,
       max: 260,
@@ -82,9 +93,12 @@ function loadFallbackQuestions() {
       correct: 230,
       tolerance: 15,
       step: 5,
+      explanation:
+        "The standard .45 ACP bullet weight is 230 grains, though lighter bullets are also common.",
     },
     {
       type: "text-input",
+      category: "Technical Terms",
       question: "What does 'MOA' stand for? (Enter the full phrase)",
       correct: "Minute of Angle",
       acceptableAnswers: [
@@ -93,9 +107,12 @@ function loadFallbackQuestions() {
         "Minutes of Angle",
         "minutes of angle",
       ],
+      explanation:
+        "MOA (Minute of Angle) is a unit of angular measurement used to describe accuracy.",
     },
     {
       type: "drag-drop",
+      category: "Applications",
       question: "Match each cartridge to its typical use:",
       items: [
         { id: "9mm", text: "9mm Parabellum" },
@@ -112,9 +129,12 @@ function loadFallbackQuestions() {
         308: "hunting",
         "22lr": "plinking",
       },
+      explanation:
+        "Each cartridge is optimized for different purposes: 9mm for personal defense, .308 for hunting large game, and .22 LR for affordable target practice.",
     },
     {
       type: "multiple-choice",
+      category: "Military History",
       question:
         "The .50 BMG cartridge was originally designed for use in what?",
       answers: [
@@ -124,49 +144,60 @@ function loadFallbackQuestions() {
         "Tank cannons",
       ],
       correct: 1,
+      explanation:
+        "The .50 BMG was originally designed for the Browning M2 machine gun during World War I.",
     },
     {
       type: "true-false",
+      category: "Military History",
       question:
         "The .30-06 cartridge was adopted by the U.S. military in 1906.",
       correct: true,
+      explanation:
+        "Correct! The '.30-06' designation literally means '.30 caliber, adopted in 1906.'",
     },
   ];
+
+  // Update question count
+  const questionCountElement = document.getElementById("questionCount");
+  if (questionCountElement) {
+    questionCountElement.textContent = quizData.length;
+  }
 }
 
 // Tier definitions
 const tiers = [
   {
     name: "Recruit",
-    range: [0, 3],
+    range: [0, 2],
     icon: "🎯",
     description:
       "You're new to ammunition knowledge. Every expert started here - keep learning and you'll advance quickly!",
   },
   {
     name: "Marksman",
-    range: [4, 6],
+    range: [3, 4],
     icon: "🏅",
     description:
       "You're building solid ammunition expertise. You understand the basics and are ready for more advanced concepts.",
   },
   {
     name: "Expert",
-    range: [7, 9],
+    range: [5, 6],
     icon: "⭐",
     description:
       "You have strong ammunition knowledge! You understand most concepts and could confidently discuss ballistics.",
   },
   {
     name: "Master Gunsmith",
-    range: [10, 11],
+    range: [7, 7],
     icon: "🎖️",
     description:
       "Exceptional expertise! You have deep ammunition knowledge that rivals many professionals in the field.",
   },
   {
     name: "Arsenal Commander",
-    range: [12, 12],
+    range: [8, 8],
     icon: "👑",
     description:
       "Elite ammunition authority! Your knowledge is comprehensive and you're among the top tier of enthusiasts.",
@@ -183,7 +214,6 @@ let userTextAnswer = "";
 let sliderValue = null;
 let streak = 0;
 let maxStreak = 0;
-let questionStartTime = 0;
 
 // DOM Elements
 const sections = {
@@ -194,7 +224,10 @@ const sections = {
 };
 
 // Initialize Quiz
-function startQuiz() {
+async function startQuiz() {
+  trackQuizEvent("quiz_started");
+  await loadQuestions();
+  userAnswers = []; // Reset user answers
   showSection("quiz");
   loadQuestion();
 }
@@ -210,9 +243,6 @@ function showSection(sectionName) {
 // Load Current Question
 function loadQuestion() {
   const question = quizData[currentQuestion];
-
-  // Track question start time
-  questionStartTime = Date.now();
 
   // Update progress with category
   const progress = ((currentQuestion + 1) / quizData.length) * 100;
@@ -260,11 +290,7 @@ function loadQuestion() {
   }
 
   // Reset state
-  selectedAnswer = null;
-  userTextAnswer = "";
-  sliderValue = null;
-  dragDropAnswers = {};
-  document.getElementById("nextBtn").disabled = true;
+  resetQuestionState();
 }
 
 function loadMultipleChoice(question, container) {
@@ -321,7 +347,7 @@ function loadSlider(question, container) {
   slider.className = "slider";
   slider.min = question.min;
   slider.max = question.max;
-  slider.step = question.step || 10; // Use step from question data, default to 10
+  slider.step = question.step || 10;
   slider.value = Math.round((question.min + question.max) / 2);
 
   const valueDisplay = document.createElement("div");
@@ -334,11 +360,10 @@ function loadSlider(question, container) {
     handleSliderInput(value);
   };
 
-  // Add smart preset buttons (logical intervals, NOT including correct answer)
+  // Add smart preset buttons
   const presetsContainer = document.createElement("div");
   presetsContainer.className = "slider-presets";
 
-  // Generate smart preset values at logical intervals
   const presetValues = generateSmartPresets(
     question.min,
     question.max,
@@ -364,48 +389,35 @@ function loadSlider(question, container) {
   sliderContainer.appendChild(presetsContainer);
   container.appendChild(sliderContainer);
 
-  // Set initial value
   handleSliderInput(parseInt(slider.value));
 }
 
-// Generate smart preset values at logical intervals
 function generateSmartPresets(min, max, unit) {
   const range = max - min;
   let interval;
 
-  // Determine logical intervals based on range and unit type
   if (unit === "fps") {
-    // For velocity: use 200 fps intervals
     interval = 200;
   } else if (unit === "grains") {
-    // For bullet weight: use 20 grain intervals
     interval = 20;
   } else if (range > 1000) {
-    // Large ranges: use 200 unit intervals
     interval = 200;
   } else if (range > 100) {
-    // Medium ranges: use 25 unit intervals
     interval = 25;
   } else {
-    // Small ranges: use 10 unit intervals
     interval = 10;
   }
 
   const presets = [];
-
-  // Always include the min and max values
   presets.push(min);
 
-  // Add interval values
   for (let val = min + interval; val < max; val += interval) {
-    // Round to nearest logical number
     const roundedVal = Math.round(val / interval) * interval;
     if (roundedVal > min && roundedVal < max && !presets.includes(roundedVal)) {
       presets.push(roundedVal);
     }
   }
 
-  // Always include the max value
   if (!presets.includes(max)) {
     presets.push(max);
   }
@@ -425,7 +437,6 @@ function loadDragDrop(question, container) {
   targetsContainer.className = "drag-targets-container";
   targetsContainer.innerHTML = "<h4>To these categories:</h4>";
 
-  // Create draggable items
   question.items.forEach((item) => {
     const itemElement = document.createElement("div");
     itemElement.className = "drag-item";
@@ -440,7 +451,6 @@ function loadDragDrop(question, container) {
     itemsContainer.appendChild(itemElement);
   });
 
-  // Create drop targets
   question.targets.forEach((target) => {
     const targetElement = document.createElement("div");
     targetElement.className = "drop-target";
@@ -456,7 +466,6 @@ function loadDragDrop(question, container) {
       // Check if this target already has an item
       const existingItem = targetElement.querySelector(".dropped-item");
       if (existingItem) {
-        // Return the existing item to available state
         const existingItemId = existingItem.dataset.id;
         const originalItem = document.querySelector(
           `.drag-item[data-id="${existingItemId}"]`
@@ -474,7 +483,6 @@ function loadDragDrop(question, container) {
         const existing = t.querySelector(`[data-id="${itemId}"]`);
         if (existing) {
           existing.remove();
-          // Restore the original item
           const originalItem = document.querySelector(
             `.drag-item[data-id="${itemId}"]`
           );
@@ -495,7 +503,6 @@ function loadDragDrop(question, container) {
         clonedItem.draggable = false;
         targetElement.appendChild(clonedItem);
 
-        // Hide the original item to show it's been used
         draggedItem.style.display = "none";
 
         dragDropAnswers[itemId] = targetId;
@@ -527,16 +534,13 @@ function checkDragDropComplete(question) {
   document.getElementById("nextBtn").disabled = !isComplete;
 }
 
-// Handle Answer Selection
 function selectAnswer(answer) {
-  selectedAnswer = answer; // This will now store either a number or boolean
+  selectedAnswer = answer;
 
-  // Update UI for answer options
   const answerOptions = document.querySelectorAll(".answer-option");
   answerOptions.forEach((option, i) => {
     option.classList.remove("selected");
 
-    // For true/false questions, match by boolean value
     if (typeof answer === "boolean") {
       const optionText = option.textContent.toLowerCase();
       if (
@@ -545,47 +549,57 @@ function selectAnswer(answer) {
       ) {
         option.classList.add("selected");
       }
-    }
-    // For multiple choice, match by index
-    else if (i === answer) {
+    } else if (i === answer) {
       option.classList.add("selected");
     }
   });
 
-  // Enable next button
   document.getElementById("nextBtn").disabled = false;
 }
 
-// Move to Next Question
 function nextQuestion() {
   const question = quizData[currentQuestion];
   let isCorrect = false;
+  let userAnswer = null;
 
-  // Check answer based on question type
+  // Check answer based on question type and store user's answer
   switch (question.type) {
     case "multiple-choice":
     case "image-multiple-choice":
       isCorrect = selectedAnswer === question.correct;
+      userAnswer = question.answers[selectedAnswer];
       break;
     case "true-false":
       isCorrect = selectedAnswer === question.correct;
+      userAnswer = selectedAnswer;
       break;
     case "text-input":
       isCorrect = question.acceptableAnswers.some(
         (acceptable) =>
           acceptable.toLowerCase() === userTextAnswer.toLowerCase()
       );
+      userAnswer = userTextAnswer;
       break;
     case "slider":
       isCorrect =
         Math.abs(sliderValue - question.correct) <= question.tolerance;
+      userAnswer = `${sliderValue} ${question.unit}`;
       break;
     case "drag-drop":
       isCorrect = Object.keys(question.correctMatches).every(
         (itemId) => dragDropAnswers[itemId] === question.correctMatches[itemId]
       );
+      userAnswer = dragDropAnswers;
       break;
   }
+
+  // Store the answer for results page
+  userAnswers.push({
+    question: question,
+    userAnswer: userAnswer,
+    isCorrect: isCorrect,
+    questionIndex: currentQuestion,
+  });
 
   // Update score and streak
   if (isCorrect) {
@@ -596,75 +610,15 @@ function nextQuestion() {
     streak = 0;
   }
 
-  // Show explanation
-  showExplanation(question, isCorrect);
-}
-
-// Show explanation after answer
-function showExplanation(question, isCorrect) {
-  const answersContainer = document.getElementById("answersContainer");
-  const explanationDiv = document.createElement("div");
-  explanationDiv.className = `explanation ${
-    isCorrect ? "correct" : "incorrect"
-  }`;
-
-  const resultText = document.createElement("div");
-  resultText.className = "explanation-result";
-  resultText.innerHTML = isCorrect
-    ? `<span class="result-icon">✓</span> Correct!`
-    : `<span class="result-icon">✗</span> Incorrect`;
-
-  const explanationText = document.createElement("div");
-  explanationText.className = "explanation-text";
-  explanationText.textContent =
-    question.explanation || "No explanation available.";
-
-  // Show streak if user got it right and has a streak > 1
-  if (isCorrect && streak > 1) {
-    const streakDiv = document.createElement("div");
-    streakDiv.className = "streak-indicator";
-    streakDiv.innerHTML = `🔥 ${streak} in a row!`;
-    explanationDiv.appendChild(streakDiv);
-  }
-
-  explanationDiv.appendChild(resultText);
-  explanationDiv.appendChild(explanationText);
-
-  // Add to page
-  answersContainer.appendChild(explanationDiv);
-
-  // Update button text and add delay
-  const nextBtn = document.getElementById("nextBtn");
-  if (currentQuestion + 1 < quizData.length) {
-    nextBtn.textContent = "Next Question";
-    nextBtn.onclick = proceedToNext;
-  } else {
-    nextBtn.textContent = "Finish Quiz";
-    nextBtn.onclick = proceedToNext;
-  }
-  nextBtn.disabled = false;
-
-  // Scroll to explanation
-  explanationDiv.scrollIntoView({ behavior: "smooth", block: "nearest" });
-}
-
-// Proceed to next question or finish
-function proceedToNext() {
   currentQuestion++;
 
   if (currentQuestion < quizData.length) {
     loadQuestion();
-    // Reset button
-    const nextBtn = document.getElementById("nextBtn");
-    nextBtn.textContent = "Next Question";
-    nextBtn.onclick = nextQuestion;
   } else {
-    // Quiz complete
     showSection("emailCapture");
   }
 }
 
-// Handle Email Submission
 function submitEmail() {
   const emailInput = document.getElementById("emailInput");
   const email = emailInput.value.trim();
@@ -676,27 +630,28 @@ function submitEmail() {
 
   userEmail = email;
 
-  // In a real implementation, you would send this data to your server
-  console.log("Email submitted:", email);
-  console.log("Score:", score);
+  trackQuizEvent("quiz_completed", {
+    score: score,
+    totalQuestions: quizData.length,
+    accuracy: Math.round((score / quizData.length) * 100),
+    tier: getTier(score).name,
+  });
 
   showResults();
 }
 
-// Email Validation
 function isValidEmail(email) {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   return emailRegex.test(email);
 }
 
-// Show Results
 function showResults() {
   showSection("results");
 
   // Display score
   document.getElementById("finalScore").textContent = score;
-  document.getElementById("correctCount").textContent = score;
   document.getElementById("scoreTotal").textContent = quizData.length;
+  document.getElementById("correctCount").textContent = score;
 
   // Calculate accuracy
   const accuracy = Math.round((score / quizData.length) * 100);
@@ -723,18 +678,90 @@ function showResults() {
     achievementsDiv.appendChild(badgeDiv);
   });
 
+  // Show detailed explanations for all questions
+  showDetailedExplanations();
+
   // Update tier badge color based on performance
   const tierBadge = document.getElementById("tierBadge");
   if (score >= 7) {
-    tierBadge.style.borderColor = "#bf9400"; // Gold for top performers
+    tierBadge.style.borderColor = "#bf9400";
   } else if (score >= 5) {
-    tierBadge.style.borderColor = "#99161d"; // Red for good performance
+    tierBadge.style.borderColor = "#99161d";
   } else {
-    tierBadge.style.borderColor = "#464648"; // Gray for beginners
+    tierBadge.style.borderColor = "#464648";
   }
+
+  // Simulate email delivery
+  simulateEmailDelivery();
 }
 
-// Get achievements based on performance
+function showDetailedExplanations() {
+  const explanationsContainer = document.getElementById("detailedExplanations");
+  explanationsContainer.innerHTML = "<h4>Question Breakdown</h4>";
+
+  userAnswers.forEach((answer, index) => {
+    const explanationDiv = document.createElement("div");
+    explanationDiv.className = `question-explanation ${
+      answer.isCorrect ? "correct" : "incorrect"
+    }`;
+
+    const questionHeader = document.createElement("div");
+    questionHeader.className = "explanation-header";
+    questionHeader.innerHTML = `
+            <span class="question-number">Question ${index + 1}</span>
+            <span class="result-icon ${
+              answer.isCorrect ? "correct" : "incorrect"
+            }">${answer.isCorrect ? "✓" : "✗"}</span>
+        `;
+
+    const questionText = document.createElement("div");
+    questionText.className = "explanation-question";
+    questionText.textContent = answer.question.question;
+
+    const answerInfo = document.createElement("div");
+    answerInfo.className = "explanation-answer";
+
+    let userAnswerText = "";
+    if (answer.question.type === "drag-drop") {
+      userAnswerText =
+        "Your matches: " +
+        Object.entries(answer.userAnswer)
+          .map(([item, target]) => `${item}→${target}`)
+          .join(", ");
+    } else {
+      userAnswerText = `Your answer: ${answer.userAnswer}`;
+    }
+
+    answerInfo.innerHTML = `
+            <div class="user-answer">${userAnswerText}</div>
+            <div class="correct-indicator">${
+              answer.isCorrect ? "Correct!" : "Incorrect"
+            }</div>
+        `;
+
+    const explanationText = document.createElement("div");
+    explanationText.className = "explanation-detail";
+    explanationText.textContent =
+      answer.question.explanation || "No explanation available.";
+
+    explanationDiv.appendChild(questionHeader);
+    explanationDiv.appendChild(questionText);
+    explanationDiv.appendChild(answerInfo);
+    explanationDiv.appendChild(explanationText);
+
+    explanationsContainer.appendChild(explanationDiv);
+  });
+}
+
+function getTier(score) {
+  for (const tier of tiers) {
+    if (score >= tier.range[0] && score <= tier.range[1]) {
+      return tier;
+    }
+  }
+  return tiers[0];
+}
+
 function getAchievements() {
   const achievements = [];
 
@@ -757,20 +784,9 @@ function getAchievements() {
   return achievements;
 }
 
-// Get Tier Based on Score
-function getTier(score) {
-  for (const tier of tiers) {
-    if (score >= tier.range[0] && score <= tier.range[1]) {
-      return tier;
-    }
-  }
-  return tiers[0]; // Default to first tier
-}
-
-// Social Sharing Functions
 function shareTwitter() {
   const tier = getTier(score);
-  const text = `I just scored ${score}/12 on the Ultimate Ammunition Knowledge Quiz and earned the rank of ${tier.name}! Test your expertise:`;
+  const text = `I just scored ${score}/${quizData.length} on the Ultimate Ammunition Knowledge Quiz and earned the rank of ${tier.name}! Test your expertise:`;
   const url = encodeURIComponent(window.location.href);
   window.open(
     `https://twitter.com/intent/tweet?text=${encodeURIComponent(
@@ -785,34 +801,58 @@ function shareFacebook() {
   window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}`, "_blank");
 }
 
-// Navigation Functions
 function visitStore() {
-  // In a real implementation, this would redirect to your store
   window.open("https://example.com", "_blank");
 }
 
 function retakeQuiz() {
-  // Reset quiz state
   currentQuestion = 0;
   score = 0;
   selectedAnswer = null;
   streak = 0;
   maxStreak = 0;
+  userAnswers = [];
 
-  // Reset email input
   document.getElementById("emailInput").value = "";
-
-  // Generate new quiz
   generateQuiz();
-
-  // Go back to landing
   showSection("landing");
+}
+
+function resetQuestionState() {
+  selectedAnswer = null;
+  userTextAnswer = "";
+  sliderValue = null;
+  dragDropAnswers = {};
+  document.getElementById("nextBtn").disabled = true;
+}
+
+function simulateEmailDelivery() {
+  if (!userEmail) return;
+
+  const tier = getTier(score);
+  const emailOptIn = document.getElementById("emailOptIn")
+    ? document.getElementById("emailOptIn").checked
+    : true;
+  const emailContent = {
+    to: userEmail,
+    subject: `Your Ammunition Knowledge Quiz Results - ${tier.name} Level!`,
+    score: score,
+    totalQuestions: quizData.length,
+    tier: tier,
+    accuracy: Math.round((score / quizData.length) * 100),
+    optIn: emailOptIn,
+  };
+
+  console.log("Email content to be sent:", emailContent);
+}
+
+function trackQuizEvent(eventName, data = {}) {
+  console.log("Analytics Event:", eventName, data);
 }
 
 // Keyboard Navigation
 document.addEventListener("keydown", (e) => {
-  if (sections.quiz.classList.contains("active")) {
-    // Number keys for answer selection
+  if (sections.quiz && sections.quiz.classList.contains("active")) {
     if (e.key >= "1" && e.key <= "4") {
       const answerIndex = parseInt(e.key) - 1;
       const answerOptions = document.querySelectorAll(".answer-option");
@@ -821,14 +861,16 @@ document.addEventListener("keydown", (e) => {
       }
     }
 
-    // Enter key for next question
     if (e.key === "Enter" && !document.getElementById("nextBtn").disabled) {
       nextQuestion();
     }
   }
 
-  // Enter key on email capture
-  if (sections.emailCapture.classList.contains("active") && e.key === "Enter") {
+  if (
+    sections.emailCapture &&
+    sections.emailCapture.classList.contains("active") &&
+    e.key === "Enter"
+  ) {
     submitEmail();
   }
 });
@@ -841,119 +883,29 @@ const observer = new MutationObserver((mutations) => {
       mutation.target.id === "emailCapture"
     ) {
       setTimeout(() => {
-        document.getElementById("emailInput").focus();
+        const emailInput = document.getElementById("emailInput");
+        if (emailInput) emailInput.focus();
       }, 100);
     }
   });
 });
 
-// Observe all sections for class changes
-Object.values(sections).forEach((section) => {
-  observer.observe(section, { attributes: true, attributeFilter: ["class"] });
-});
-
-// Simulate email delivery (for demo purposes)
-function simulateEmailDelivery() {
-  if (!userEmail) return;
-
-  const tier = getTier(score);
-  const emailContent = {
-    to: userEmail,
-    subject: `Your Ammunition Knowledge Quiz Results - ${tier.name} Level!`,
-    score: score,
-    totalQuestions: quizData.length,
-    tier: tier,
-    accuracy: Math.round((score / quizData.length) * 100),
-  };
-
-  // In a real implementation, send this to your email service
-  console.log("Email content to be sent:", emailContent);
-}
-
-// Call email simulation after showing results
-function showResultsWithEmail() {
-  showResults();
-  simulateEmailDelivery();
-}
-
-// Update the submitEmail function to use the new function
-function submitEmail() {
-  const emailInput = document.getElementById("emailInput");
-  const email = emailInput.value.trim();
-
-  if (!email || !isValidEmail(email)) {
-    alert("Please enter a valid email address.");
-    return;
-  }
-
-  userEmail = email;
-
-  // In a real implementation, you would send this data to your server
-  console.log("Email submitted:", email);
-  console.log("Score:", score);
-
-  showResultsWithEmail();
-}
-
-// Analytics tracking (placeholder for real implementation)
-function trackQuizEvent(eventName, data = {}) {
-  // In a real implementation, integrate with Google Analytics, Mixpanel, etc.
-  console.log("Analytics Event:", eventName, data);
-}
-
-// Track quiz start
-function startQuiz() {
-  trackQuizEvent("quiz_started");
-  showSection("quiz");
-  loadQuestion();
-}
-
-// Track quiz completion
-function submitEmail() {
-  const emailInput = document.getElementById("emailInput");
-  const email = emailInput.value.trim();
-
-  if (!email || !isValidEmail(email)) {
-    alert("Please enter a valid email address.");
-    return;
-  }
-
-  userEmail = email;
-
-  // Track completion
-  trackQuizEvent("quiz_completed", {
-    score: score,
-    totalQuestions: quizData.length,
-    accuracy: Math.round((score / quizData.length) * 100),
-    tier: getTier(score).name,
+// Observe sections for class changes
+document.addEventListener("DOMContentLoaded", () => {
+  Object.values(sections).forEach((section) => {
+    if (section) {
+      observer.observe(section, {
+        attributes: true,
+        attributeFilter: ["class"],
+      });
+    }
   });
-
-  console.log("Email submitted:", email);
-  console.log("Score:", score);
-
-  showResultsWithEmail();
-}
-
-// Reset state for new questions
-function resetQuestionState() {
-  selectedAnswer = null;
-  userTextAnswer = "";
-  sliderValue = null;
-  dragDropAnswers = {};
-  document.getElementById("nextBtn").disabled = true;
-}
+});
 
 // Initialize on page load
 document.addEventListener("DOMContentLoaded", async () => {
-  // Ensure landing section is shown by default
   showSection("landing");
-
-  // Pre-load questions for faster quiz start
   await loadQuestions();
-
-  // Track page load
   trackQuizEvent("quiz_page_loaded");
-
-  // Reset state
   resetQuestionState();
 });
