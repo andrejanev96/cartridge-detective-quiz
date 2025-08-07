@@ -73,7 +73,8 @@ export const useQuizStore = create<QuizStore>((set, get) => ({
 
   loadQuestions: async () => {
     try {
-      const response = await fetch('/cartridge-questions.json');
+      const basePath = import.meta.env.DEV ? '' : '/cartridge-detective-quiz';
+      const response = await fetch(`${basePath}/cartridge-questions.json`);
       const allQuestions = await response.json();
       get().generateQuiz(allQuestions);
     } catch (error) {
