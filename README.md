@@ -15,10 +15,12 @@ A modern, interactive quiz application for testing ammunition and cartridge iden
 ## 🚀 Quick Start
 
 ### Prerequisites
-- Node.js 18+ 
+
+- Node.js 18+
 - npm or yarn
 
 ### Installation
+
 ```bash
 # Clone the repository
 git clone <repository-url>
@@ -35,6 +37,7 @@ npm run dev
 ```
 
 ### Environment Variables
+
 Configure the following in your `.env` file:
 
 ```bash
@@ -65,6 +68,7 @@ src/
 ## 🎨 Styling
 
 The application maintains the original Ammo.com visual design:
+
 - **Primary Color**: `#99161d` (Ammo.com red)
 - **Accent Color**: `#bf9400` (Gold)
 - **Background**: `#111111` (Dark)
@@ -73,6 +77,7 @@ The application maintains the original Ammo.com visual design:
 ## 📊 Analytics Events
 
 The application tracks the following events:
+
 - `quiz_started`: User begins the challenge
 - `question_answered`: Each question response
 - `quiz_completed`: Quiz completion with score data
@@ -82,12 +87,14 @@ The application tracks the following events:
 ## 📧 Email Integration
 
 ### MailChimp Features:
+
 - Automatic subscription management
 - Quiz score tagging
 - Custom merge fields for personalization
 - BULLETin newsletter opt-in/out
 
 ### Results Email:
+
 - Detailed question explanations
 - Historical context for each cartridge
 - Personalized score analysis
@@ -96,6 +103,7 @@ The application tracks the following events:
 ## 🛠️ Development
 
 ### Available Scripts
+
 ```bash
 npm run dev          # Start development server
 npm run build        # Build for production
@@ -105,12 +113,13 @@ npm run type-check   # Run TypeScript compiler
 ```
 
 ### Adding New Questions
+
 Edit `src/data/cartridge-questions.json`:
 
 ```json
 {
   "easy": [...],
-  "medium": [...], 
+  "medium": [...],
   "hard": [...],
   "settings": {
     "questionsPerQuiz": 15,
@@ -124,6 +133,7 @@ Edit `src/data/cartridge-questions.json`:
 ```
 
 ### Question Types
+
 - `multiple-choice`: Standard multiple choice
 - `image-multiple-choice`: Visual cartridge identification
 - `true-false`: True/false questions
@@ -133,6 +143,7 @@ Edit `src/data/cartridge-questions.json`:
 ## 🚢 Deployment
 
 ### Build for Production
+
 ```bash
 npm run build
 ```
@@ -140,6 +151,7 @@ npm run build
 The `dist/` folder contains the production-ready files.
 
 ### Deployment Options
+
 - **Vercel**: Connect GitHub repo for automatic deployments
 - **Netlify**: Drag and drop `dist/` folder
 - **AWS S3**: Upload static files to S3 bucket
@@ -148,6 +160,7 @@ The `dist/` folder contains the production-ready files.
 ## 🔮 Future Enhancements
 
 ### Planned Features
+
 - [ ] Percentile ranking system (requires backend)
 - [ ] A/B testing framework
 - [ ] Advanced question types (drag & drop matching)
@@ -156,7 +169,9 @@ The `dist/` folder contains the production-ready files.
 - [ ] Mobile app version
 
 ### A/B Testing Ready
+
 The architecture supports easy A/B testing for:
+
 - Question difficulty progression
 - UI design variations
 - Email capture copy
@@ -172,8 +187,6 @@ The architecture supports easy A/B testing for:
 
 ## 📝 License
 
-[Your License Here]
-
 ## 🎖️ Campaign Integration
 
 This quiz is designed for the "Cartridge Detective Challenge" marketing campaign:
@@ -184,6 +197,7 @@ This quiz is designed for the "Cartridge Detective Challenge" marketing campaign
 - **Retention**: Newsletter subscription for ongoing engagement
 
 ### Campaign Performance Metrics
+
 - Completion rate
 - Email conversion rate
 - Social sharing rate
