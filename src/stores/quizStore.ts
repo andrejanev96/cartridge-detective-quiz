@@ -73,7 +73,7 @@ export const useQuizStore = create<QuizStore>((set, get) => ({
 
   loadQuestions: async () => {
     try {
-      const response = await fetch('/src/data/cartridge-questions.json');
+      const response = await fetch('/cartridge-questions.json');
       const allQuestions = await response.json();
       get().generateQuiz(allQuestions);
     } catch (error) {
