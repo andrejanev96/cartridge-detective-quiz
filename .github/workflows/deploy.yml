@@ -21,6 +21,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       
+      - name: Debug - List files
+        run: |
+          ls -la
+          pwd
+          echo "Checking if index.html exists:"
+          test -f index.html && echo "index.html exists" || echo "index.html NOT found"
+      
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
