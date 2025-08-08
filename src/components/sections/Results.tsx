@@ -62,7 +62,8 @@ export const Results: React.FC = () => {
               transition={{ delay: 0.4, duration: 0.5 }}
             >
               <span className="score-number">{score}</span>
-              <span className="score-total">/ {quizData.length}</span>
+              <span className="score-separator"> / </span>
+              <span className="score-total">{quizData.length}</span>
             </motion.div>
           </div>
 

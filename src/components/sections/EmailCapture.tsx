@@ -9,6 +9,7 @@ import { EmailFormData } from '@/types/quiz';
 export const EmailCapture: React.FC = () => {
   const { submitEmail } = useQuizStore();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isFiring, setIsFiring] = useState(false);
 
   const {
     register,
@@ -39,15 +40,21 @@ export const EmailCapture: React.FC = () => {
   }, [isValid, handleSubmit]);
 
   const onSubmit = async (data: EmailFormData) => {
+    setIsFiring(true);
     setIsSubmitting(true);
     
     try {
+      // Show firing animation briefly
+      await new Promise(resolve => setTimeout(resolve, 600));
+      setIsFiring(false);
+      
       // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await new Promise(resolve => setTimeout(resolve, 400));
       submitEmail(data.email, data.subscribeToBulletin);
     } catch (error) {
       console.error('Email submission error:', error);
       setIsSubmitting(false);
+      setIsFiring(false);
     }
   };
 
@@ -100,12 +107,30 @@ export const EmailCapture: React.FC = () => {
               style={errors.email ? { borderColor: '#dc3545' } : {}}
             />
             
-            <Button 
-              type="submit" 
-              disabled={!isValid || isSubmitting}
-            >
-              {isSubmitting ? 'Sending...' : 'Get My Results'}
-            </Button>
+            <div className="submit-container" style={{ position: 'relative' }}>
+              {isFiring && (
+                <>
+                  <motion.div
+                    className="muzzle-flash"
+                    initial={{ opacity: 0, scale: 0.5 }}
+                    animate={{ opacity: [0, 1, 0], scale: [0.5, 1.2, 0.5] }}
+                    transition={{ duration: 0.3, ease: 'easeOut' }}
+                  />
+                  <motion.div
+                    className="bullet-trail"
+                    initial={{ x: -20, opacity: 1 }}
+                    animate={{ x: 200, opacity: 0 }}
+                    transition={{ duration: 0.4, ease: 'easeOut' }}
+                  />
+                </>
+              )}
+              <Button 
+                type="submit" 
+                disabled={!isValid || isSubmitting}
+              >
+                {isSubmitting ? (isFiring ? 'FIRING! 💥' : 'Reloading...') : 'FIRE! 🔫'}
+              </Button>
+            </div>
           </motion.form>
 
           {errors.email && (
@@ -119,19 +144,40 @@ export const EmailCapture: React.FC = () => {
           )}
 
           <motion.div 
-            className="bulletin-checkbox"
+            className="bulletin-options"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.8 }}
           >
-            <input
-              type="checkbox"
-              id="bulletinOptOut"
-              {...register('subscribeToBulletin')}
-            />
-            <label htmlFor="bulletinOptOut">
-              I would like to receive the Ammo.com BULLETin for weekly ammo discounts and insights
-            </label>
+            <h4 className="options-title">Choose your target:</h4>
+            
+            <div className="bullet-option" data-aimed={true}>
+              <div className="bullet-shell">
+                <div className="bullet-tip"></div>
+              </div>
+              <label>
+                <input
+                  type="checkbox"
+                  {...register('subscribeToBulletin')}
+                  defaultChecked
+                />
+                <span>🎯 Get the Ammo.com BULLETin for weekly ammo discounts and insights</span>
+              </label>
+            </div>
+
+            <div className="bullet-option">
+              <div className="bullet-shell">
+                <div className="bullet-tip"></div>
+              </div>
+              <label>
+                <input
+                  type="checkbox"
+                  checked={false}
+                  disabled
+                />
+                <span>❌ No thanks, I'll miss out on the deals</span>
+              </label>
+            </div>
           </motion.div>
         </div>
       </div>
