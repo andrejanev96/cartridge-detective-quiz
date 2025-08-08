@@ -144,14 +144,12 @@ export const EmailCapture: React.FC = () => {
           )}
 
           <motion.div 
-            className="bulletin-options"
+            className="bulletin-option-single"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.8 }}
-          >
-            <h4 className="options-title">Choose your target:</h4>
-            
-            <div className="bullet-option" data-aimed={true}>
+          >            
+            <div className="bullet-option">
               <div className="bullet-shell">
                 <div className="bullet-tip"></div>
               </div>
@@ -162,20 +160,6 @@ export const EmailCapture: React.FC = () => {
                   defaultChecked
                 />
                 <span>🎯 Get the Ammo.com BULLETin for weekly ammo discounts and insights</span>
-              </label>
-            </div>
-
-            <div className="bullet-option">
-              <div className="bullet-shell">
-                <div className="bullet-tip"></div>
-              </div>
-              <label>
-                <input
-                  type="checkbox"
-                  checked={false}
-                  disabled
-                />
-                <span>❌ No thanks, I'll miss out on the deals</span>
               </label>
             </div>
           </motion.div>

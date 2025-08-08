@@ -444,48 +444,32 @@ body {
   border-color: #bf9400;
 }
 
-/* Bullet-themed Options */
-.bulletin-options {
-  margin: 30px 0;
-  text-align: left;
-}
-
-.options-title {
-  color: #bf9400;
-  font-size: 1.1rem;
-  font-weight: 600;
-  margin-bottom: 20px;
+/* Single Bullet-themed Checkbox */
+.bulletin-option-single {
+  margin: 20px 0;
   text-align: center;
 }
 
 .bullet-option {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 15px;
-  margin: 15px 0;
-  padding: 15px;
+  padding: 15px 20px;
   background: #1d1d1d;
   border: 2px solid #2c2c2c;
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.3s ease;
   position: relative;
+  max-width: 500px;
+  margin: 0 auto;
 }
 
 .bullet-option:hover {
   border-color: #bf9400;
   background: #242424;
-  transform: translateX(5px);
-}
-
-.bullet-option[data-aimed="true"] {
-  border-color: #99161d;
-  background: rgba(153, 22, 29, 0.1);
-}
-
-.bullet-option[data-aimed="true"]:hover {
-  border-color: #bf9400;
-  box-shadow: 0 0 15px rgba(191, 148, 0, 0.3);
+  box-shadow: 0 0 10px rgba(191, 148, 0, 0.2);
 }
 
 .bullet-shell {
