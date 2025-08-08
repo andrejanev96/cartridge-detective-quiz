@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Logo } from '@/components/ui/Logo';
 import { Button } from '@/components/ui/Button';
-import { ProgressBar } from '@/components/ui/ProgressBar';
 import { QuestionRenderer } from '@/components/quiz/QuestionRenderer';
 import { useQuizStore } from '@/stores/quizStore';
 
