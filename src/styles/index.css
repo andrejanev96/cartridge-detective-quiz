@@ -40,6 +40,10 @@ body {
   margin-bottom: 30px;
 }
 
+.logo-small {
+  margin-bottom: 20px;
+}
+
 .logo-shield {
   display: inline-block;
   background: #99161d;
@@ -185,7 +189,7 @@ body {
   color: #fff;
   font-weight: 600;
   text-align: center;
-  margin-bottom: 8px;
+  margin-bottom: 12px;
 }
 
 .question-category {
@@ -193,13 +197,13 @@ body {
   color: #bf9400;
   font-weight: 500;
   text-align: center;
-  margin-bottom: 15px;
+  margin-bottom: 18px;
 }
 
 .progress-bar-container {
   display: flex;
   justify-content: center;
-  margin-bottom: 20px;
+  margin-bottom: 25px;
 }
 
 /* Legacy progress container */
@@ -242,6 +246,10 @@ body {
 
 .quiz-navigation {
   margin-top: 30px;
+  position: relative;
+  z-index: 10;
+  display: flex;
+  justify-content: center;
 }
 
 /* Bullet Animation Effects */
@@ -741,24 +749,28 @@ body {
 
   .quiz-header {
     flex-direction: column;
-    gap: 8px;
+    gap: 12px;
     text-align: center;
-    margin-bottom: 20px;
-    padding-bottom: 12px;
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+  }
+
+  .logo-small {
+    margin-bottom: 15px;
   }
 
   .question-counter {
     font-size: 15px;
-    margin-bottom: 6px;
+    margin-bottom: 10px;
   }
 
   .question-category {
     font-size: 16px;
-    margin-bottom: 12px;
+    margin-bottom: 15px;
   }
 
   .progress-bar-container {
-    margin-bottom: 15px;
+    margin-bottom: 20px;
   }
 
   .progress-bar {
@@ -783,8 +795,13 @@ body {
   .quiz-navigation {
     margin-top: 20px;
     position: sticky;
-    bottom: 10px;
+    bottom: 15px;
     z-index: 100;
+    display: flex;
+    justify-content: center;
+    background: rgba(17, 17, 17, 0.9);
+    padding: 10px;
+    border-radius: 8px;
   }
 
   .quiz-content {
@@ -792,8 +809,9 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    min-height: calc(100vh - 120px);
-    min-height: calc(100dvh - 120px);
+    min-height: calc(100vh - 140px);
+    min-height: calc(100dvh - 140px);
+    padding-bottom: 60px; /* Space for sticky button */
   }
 
   .email-form {
@@ -883,25 +901,34 @@ body {
     font-size: 15px;
   }
 
+  .logo-small {
+    margin-bottom: 12px;
+  }
+
   .question-counter {
     font-size: 14px;
-    margin-bottom: 5px;
+    margin-bottom: 8px;
   }
 
   .question-category {
     font-size: 15px;
-    margin-bottom: 10px;
+    margin-bottom: 12px;
   }
 
   .progress-bar-container {
-    margin-bottom: 12px;
+    margin-bottom: 15px;
   }
 
   .quiz-navigation {
     margin-top: 15px;
-    bottom: 8px;
+    bottom: 10px;
     position: sticky;
     z-index: 100;
+    display: flex;
+    justify-content: center;
+    background: rgba(17, 17, 17, 0.95);
+    padding: 8px;
+    border-radius: 6px;
   }
 
   .btn {
@@ -942,8 +969,9 @@ body {
 /* Ensure touch targets are accessible on iOS */
 @media (max-width: 480px) and (orientation: portrait) {
   .quiz-content {
-    min-height: calc(100vh - 100px);
-    min-height: calc(100dvh - 100px);
+    min-height: calc(100vh - 120px);
+    min-height: calc(100dvh - 120px);
+    padding-bottom: 70px; /* Extra space for sticky button */
   }
   
   .btn {
