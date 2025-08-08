@@ -14,7 +14,7 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({
   const progress = ((current + 1) / total) * 100;
 
   return (
-    <>
+    <div className="progress-section">
       <div className="question-counter">
         Question {current + 1} of {total}
       </div>
@@ -31,6 +31,6 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({
           style={{ '--progress': `${progress}%` } as React.CSSProperties}
         />
       </div>
-    </>
+    </div>
   );
 };
