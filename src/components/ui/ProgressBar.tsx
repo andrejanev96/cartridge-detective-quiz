@@ -14,15 +14,23 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({
   const progress = ((current + 1) / total) * 100;
 
   return (
-    <div className="progress-container">
-      <div 
-        className="progress-bar"
-        style={{ '--progress': `${progress}%` } as React.CSSProperties}
-      />
-      <span className="progress-text">
+    <>
+      <div className="question-counter">
         Question {current + 1} of {total}
-        {category && ` • ${category}`}
-      </span>
-    </div>
+      </div>
+      
+      {category && (
+        <div className="question-category">
+          {category}
+        </div>
+      )}
+      
+      <div className="progress-bar-container">
+        <div 
+          className="progress-bar"
+          style={{ '--progress': `${progress}%` } as React.CSSProperties}
+        />
+      </div>
+    </>
   );
 };
