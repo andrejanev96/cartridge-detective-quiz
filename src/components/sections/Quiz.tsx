@@ -72,12 +72,25 @@ export const Quiz: React.FC = () => {
     >
       <div className="container">
         <div className="quiz-header">
-          <Logo size="small" />
-          <ProgressBar 
-            current={currentQuestion}
-            total={quizData.length}
-            category={currentQ.category}
-          />
+          <div className="quiz-header-top">
+            <Logo size="small" />
+            <div className="progress-section">
+              <div className="question-counter">
+                Question {currentQuestion + 1} of {quizData.length}
+              </div>
+              {currentQ.category && (
+                <div className="question-category">
+                  {currentQ.category}
+                </div>
+              )}
+            </div>
+          </div>
+          <div className="progress-bar-container">
+            <div 
+              className="progress-bar"
+              style={{ '--progress': `${((currentQuestion + 1) / quizData.length) * 100}%` } as React.CSSProperties}
+            />
+          </div>
         </div>
 
         {/* Bullet Animation */}
