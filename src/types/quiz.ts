@@ -1,6 +1,7 @@
 export interface BaseQuestion {
   id: string;
   type: QuestionType;
+  title: string;
   category: string;
   question: string;
   explanation: string;

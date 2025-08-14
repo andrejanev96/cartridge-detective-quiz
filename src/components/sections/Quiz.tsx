@@ -70,6 +70,27 @@ export const Quiz: React.FC = () => {
       style={{ position: 'relative', overflow: 'hidden' }}
     >
       <div className="container">
+        <div className="quiz-title-section">
+          <AnimatePresence mode="wait">
+            {currentQ.title && (
+              <motion.div 
+                className="title-bullet"
+                key={`title-${currentQuestion}`}
+                initial={{ x: -400, opacity: 0 }}
+                animate={{ x: 0, opacity: 1 }}
+                exit={{ x: 400, opacity: 0 }}
+                transition={{ 
+                  duration: 0.5,
+                  ease: "easeOut",
+                  delay: isTransitioning ? 0 : 0.1
+                }}
+              >
+                <h2 className="question-title">{currentQ.title}</h2>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+        
         <div className="quiz-header">
           <div className="quiz-header-top">
             <Logo size="small" />

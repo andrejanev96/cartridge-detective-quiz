@@ -2,185 +2,228 @@
   "easy": [
     {
       "type": "multiple-choice",
-      "category": "Popular Military Cartridges",
-      "question": "Which cartridge is commonly known as '30-06'?",
-      "answers": [
-        ".30-06 Springfield",
-        ".308 Winchester",
-        "7.62x51mm NATO",
-        ".300 Winchester Magnum"
-      ],
-      "correct": 0,
-      "explanation": "The .30-06 Springfield (officially .30-06) was the U.S. military's standard cartridge from 1906-1980. The '06' refers to the year of adoption - 1906."
-    },
-    {
-      "type": "image-multiple-choice",
+      "title": "Weight Weight… Don't Tell Me!",
       "category": "Cartridge Identification",
-      "question": "Identify this popular hunting cartridge:",
-      "image": "assets/images/cartridges/308-winchester.jpg",
+      "question": "How heavy is its bullet, probably?",
+      "image": "assets/images/cartridges/question1.jpg",
       "answers": [
-        ".308 Winchester",
-        ".30-06 Springfield",
-        "7.62x39mm",
-        ".300 Blackout"
+        "185, 200, or 230 grains",
+        "165, 180, or 200 grains", 
+        "115, 124 or 147 grains",
+        "85, 90, or 95 grains"
       ],
       "correct": 0,
-      "explanation": "The .308 Winchester is one of the most popular hunting cartridges worldwide. It's nearly identical to the 7.62x51mm NATO round and offers excellent accuracy."
-    },
-    {
-      "type": "true-false",
-      "category": "Military History",
-      "question": "The 5.56x45mm NATO was adopted to replace the 7.62x51mm NATO as the primary infantry cartridge.",
-      "correct": true,
-      "explanation": "Correct! The 5.56x45mm NATO was adopted in the 1960s-70s to replace the heavier 7.62x51mm, allowing soldiers to carry more ammunition with reduced recoil."
+      "explanation": "This appears to be a .45 ACP cartridge. The .45 ACP typically uses bullets weighing 185, 200, or 230 grains, making it one of the heavier handgun cartridges commonly used."
     },
     {
       "type": "multiple-choice",
-      "category": "Cartridge Identification",
-      "question": "Which of these is the largest cartridge?",
+      "title": "Browning's Bright Ideas",
+      "category": "Historical Development",
+      "question": "In which order were the following Automatic Colt Pistol cartridges designed?",
+      "image": "assets/images/cartridges/question2.jpg",
       "answers": [
-        ".22 Long Rifle",
-        "9mm Parabellum",
-        ".45 ACP",
-        ".50 BMG"
+        "32 ACP, 380 ACP, 45 ACP",
+        "45 ACP, 380 ACP, 32 ACP",
+        "380 ACP, 32 ACP, 45 ACP",
+        "32 ACP, 45 ACP, 380 ACP"
       ],
       "correct": 3,
-      "explanation": "The .50 BMG (Browning Machine Gun) is by far the largest, originally designed for the M2 Browning machine gun. It's approximately 5.45 inches long overall."
+      "explanation": "John Moses Browning designed these cartridges in the order: .32 ACP (1899), .45 ACP (1904), and .380 ACP (1908). The .32 ACP came first, followed by the powerful .45 ACP, and finally the .380 ACP."
     },
     {
-      "type": "text-input",
-      "category": "Military Cartridges",
-      "question": "What does 'NATO' stand for in ammunition designations like 5.56x45mm NATO?",
-      "correct": "North Atlantic Treaty Organization",
-      "acceptableAnswers": [
-        "North Atlantic Treaty Organization",
-        "north atlantic treaty organization",
-        "NATO",
-        "nato"
+      "type": "multiple-choice",
+      "title": "1963",
+      "category": "Historical Events",
+      "question": "Which cartridge was used in the assassination of President Kennedy?",
+      "image": "assets/images/cartridges/question3.jpg",
+      "answers": [
+        "6.5x52mm Carcano",
+        "7.92x57mm Mauser",
+        "303 British",
+        "7.62x54mmR"
       ],
-      "explanation": "NATO (North Atlantic Treaty Organization) standardizes ammunition specifications among member nations to ensure interoperability between allied forces."
+      "correct": 0,
+      "explanation": "The 6.5x52mm Carcano was the cartridge used in the Mannlicher-Carcano rifle during the assassination of President Kennedy in Dallas, Texas, on November 22, 1963."
+    },
+    {
+      "type": "multiple-choice",
+      "title": "\"I never miss.\"",
+      "category": "Film and Pop Culture",
+      "question": "Which cartridge is James Bond's signature ammunition?",
+      "image": "assets/images/cartridges/question4.jpg",
+      "answers": [
+        "455 Webley",
+        "32 ACP",
+        "9mm Parabellum",
+        "45 ACP"
+      ],
+      "correct": 1,
+      "explanation": "In Ian Fleming's original novels, James Bond carried a .32 ACP in his Walther PPK. Though the films often showed him using other cartridges, the .32 ACP was his literary signature round."
+    },
+    {
+      "type": "multiple-choice",
+      "title": "A Garand Old Time",
+      "category": "Military History",
+      "question": "How heavy is its bullet, probably?",
+      "image": "assets/images/cartridges/question5.jpg",
+      "answers": [
+        "150, 165, or 180 grains",
+        "120, 130 or 140 grains",
+        "110, 150 or 200 grains",
+        "300, 325 or 405 grains"
+      ],
+      "correct": 0,
+      "explanation": "The .30-06 Springfield, used in the M1 Garand rifle, typically fires bullets weighing 150, 165, or 180 grains. The 150-grain M2 Ball was the standard military load during WWII."
     }
   ],
   "medium": [
     {
       "type": "multiple-choice",
-      "category": "European Military History",
-      "question": "The 8mm Mauser (8x57mm IS) was the standard cartridge for which military?",
+      "title": "No Pressure",
+      "category": "Technical Specifications",
+      "question": "Which of the following *does not* have official +P specs?",
+      "image": "assets/images/cartridges/question6.jpg",
       "answers": [
-        "British Army",
-        "German Army",
-        "French Army",
-        "Russian Army"
+        "9mm",
+        "38 Special",
+        "45 ACP",
+        "40 S&W"
       ],
-      "correct": 1,
-      "explanation": "The 8mm Mauser was the German military's standard cartridge from 1888 through WWII, used in rifles like the Gewehr 98 and Karabiner 98k."
-    },
-    {
-      "type": "slider",
-      "category": "Ballistics",
-      "question": "What is the typical muzzle velocity of a .30-06 Springfield with a 150-grain bullet?",
-      "min": 2400,
-      "max": 3000,
-      "unit": "fps",
-      "correct": 2700,
-      "tolerance": 100,
-      "step": 50,
-      "explanation": "The .30-06 Springfield typically achieves 2700-2800 fps with a 150-grain bullet, making it effective for both military and hunting applications."
-    },
-    {
-      "type": "image-multiple-choice",
-      "category": "Obscure Military Cartridges",
-      "question": "This cartridge was used by which military force during WWII?",
-      "image": "assets/images/cartridges/arisakas.jpg",
-      "answers": [
-        "German Wehrmacht",
-        "Japanese Imperial Army",
-        "Italian Army",
-        "Soviet Red Army"
-      ],
-      "correct": 1,
-      "explanation": "This is the 6.5x50mm Arisaka (or 7.7x58mm Arisaka), used by the Japanese Imperial Army in rifles like the Type 38 and Type 99 Arisaka during WWII."
+      "correct": 3,
+      "explanation": "The .40 S&W does not have official +P specifications. While .9mm, .38 Special, and .45 ACP all have SAAMI-approved +P loadings, the .40 S&W was designed to operate at higher pressures from the start."
     },
     {
       "type": "multiple-choice",
-      "category": "Cartridge Development",
-      "question": "The .223 Remington was developed from which military cartridge?",
+      "title": "Signed, SEALed, Delivered",
+      "category": "Military Applications",
+      "question": "Which cartridge is primarily used by Navy SEALs for long-range precision work?",
+      "image": "assets/images/cartridges/question7.jpg",
       "answers": [
-        "5.56x45mm NATO",
-        ".222 Remington",
-        "5.45x39mm Soviet",
-        ".220 Swift"
+        "308 Winchester",
+        "300 Winchester Magnum",
+        "338 Lapua Magnum",
+        "50 Browning Machine Gun"
       ],
-      "correct": 1,
-      "explanation": "The .223 Remington was developed from the .222 Remington by stretching the case. Later, the 5.56x45mm NATO was developed from the .223 Remington."
+      "correct": 2,
+      "explanation": "The .338 Lapua Magnum is the preferred cartridge for Navy SEAL long-range precision rifles. It offers superior ballistics and accuracy at extended ranges compared to other options."
     },
     {
-      "type": "true-false",
-      "category": "Soviet Cartridges",
-      "question": "The 7.62x54mmR is the oldest military cartridge still in widespread use today.",
-      "correct": true,
-      "explanation": "True! Introduced in 1891, the 7.62x54mmR has been in continuous military use for over 130 years and is still used in machine guns and sniper rifles worldwide."
+      "type": "slider",
+      "title": "Elmer's Pride",
+      "category": "Ballistics",
+      "question": "What is its advertised muzzle velocity?",
+      "image": "assets/images/cartridges/question8.jpg",
+      "min": 1050,
+      "max": 1500,
+      "unit": "fps",
+      "correct": 1235,
+      "tolerance": 50,
+      "step": 25,
+      "explanation": "The .44 Magnum, Elmer Keith's pride and joy, typically achieves a muzzle velocity of around 1,235 fps with a 240-grain bullet, making it one of the most powerful handgun cartridges."
+    },
+    {
+      "type": "multiple-choice",
+      "title": "Let's Get It Started",
+      "category": "Cartridge Development",
+      "question": "Which was the first successful automatic pistol cartridge?",
+      "image": "assets/images/cartridges/question9.jpg",
+      "answers": [
+        "25 ACP",
+        "32 ACP",
+        "45 ACP",
+        "380 ACP"
+      ],
+      "correct": 1,
+      "explanation": "The .32 ACP (Automatic Colt Pistol), developed by John Moses Browning in 1899, was the first successful automatic pistol cartridge and paved the way for modern semi-automatic handgun development."
+    },
+    {
+      "type": "multiple-choice",
+      "title": "Because the South Atlantic Doesn't Matter",
+      "category": "NATO Standards",
+      "question": "Which of the following doesn't belong?",
+      "image": "assets/images/cartridges/question10.jpg",
+      "answers": [
+        "12.7x99mm",
+        "5.56x45mm",
+        "7.62x35mm",
+        "5.7x28mm"
+      ],
+      "correct": 2,
+      "explanation": "The 7.62x35mm (.300 Blackout) is not a NATO standard cartridge. The others - 12.7x99mm (.50 BMG), 5.56x45mm, and 5.7x28mm - are all NATO standardized rounds."
+    },
+    {
+      "type": "multiple-choice",
+      "title": "This Is Going to Sting",
+      "category": "Wildcat Cartridges",
+      "question": "Which of the following doesn't belong?",
+      "image": "assets/images/cartridges/question11.jpg",
+      "answers": [
+        "17 Mosquito",
+        "22 Hornet",
+        "218 Bee",
+        "219 Wasp"
+      ],
+      "correct": 0,
+      "explanation": "The .17 Mosquito doesn't belong as it's not part of the classic family of small, fast cartridges. The .22 Hornet, .218 Bee, and .219 Wasp are all related high-velocity varmint cartridges from the same era."
     }
   ],
   "hard": [
     {
-      "type": "text-input",
-      "category": "Experimental Cartridges",
-      "question": "What was the designation of the experimental U.S. military cartridge that used caseless ammunition?",
-      "correct": "4.73x33mm Caseless",
-      "acceptableAnswers": [
-        "4.73x33mm Caseless",
-        "4.73x33mm caseless",
-        "4.73x33",
-        "G11 cartridge",
-        "HK G11 cartridge"
-      ],
-      "explanation": "The 4.73x33mm Caseless was developed for the H&K G11 rifle in the 1980s-90s. The program was cancelled after German reunification due to cost and complexity."
-    },
-    {
-      "type": "multiple-choice",
-      "category": "Obsolete Military Cartridges",
-      "question": "The .577/450 Martini-Henry was primarily used by which military force?",
-      "answers": [
-        "U.S. Army",
-        "German Army",
-        "British Army",
-        "French Army"
-      ],
-      "correct": 2,
-      "explanation": "The .577/450 Martini-Henry was the British Army's standard cartridge from 1871-1889, used in the famous Martini-Henry rifle during colonial campaigns."
-    },
-    {
       "type": "slider",
+      "title": "The Genuine ARticle",
       "category": "Ballistics",
-      "question": "What is the approximate muzzle energy of a .50 BMG round?",
-      "min": 8000,
-      "max": 16000,
-      "unit": "ft-lbs",
-      "correct": 13000,
-      "tolerance": 1500,
-      "step": 500,
-      "explanation": "The .50 BMG generates approximately 13,000-14,000 ft-lbs of muzzle energy, making it one of the most powerful cartridges in military service."
+      "question": "What is its muzzle velocity out of a 20\" barrel?",
+      "image": "assets/images/cartridges/question12.jpg",
+      "min": 2750,
+      "max": 3425,
+      "unit": "fps",
+      "correct": 3060,
+      "tolerance": 75,
+      "step": 25,
+      "explanation": "The 5.56x45mm NATO cartridge achieves approximately 3,060 fps muzzle velocity from a 20-inch barrel with the standard M855 62-grain bullet, making it highly effective at intermediate ranges."
     },
     {
       "type": "multiple-choice",
-      "category": "Pre-1950s American Service",
-      "question": "Which cartridge was used in the Springfield Model 1903 rifle before the adoption of the .30-06?",
+      "title": "Do You Feel Lucky?",
+      "category": "Revolver Cartridges",
+      "question": "Which cartridge was used in the famous .44 Magnum before it became the .44 Magnum?",
+      "image": "assets/images/cartridges/question13.jpg",
       "answers": [
-        ".30-40 Krag",
-        ".45-70 Government",
-        ".30-03 Springfield",
-        ".32-40 Winchester"
+        "5.7×15mmR",
+        "10.9x24mmR",
+        "10.9×29mmR",
+        "10.9x33mmR"
       ],
       "correct": 2,
-      "explanation": "The .30-03 Springfield was used briefly (1903-1906) before being replaced by the .30-06, which had a lighter, more aerodynamic bullet."
+      "explanation": "The 10.9×29mmR (.44 Special) was the predecessor to the .44 Magnum. Elmer Keith's experiments with heavy loads in .44 Special cases led to the development of the longer .44 Magnum case."
     },
     {
-      "type": "true-false",
-      "category": "Cartridge Development",
-      "question": "The .280 British was rejected by NATO in favor of the 7.62x51mm NATO due to American influence.",
-      "correct": true,
-      "explanation": "True. The .280 British offered better controllability in automatic fire, but the U.S. insisted on the more powerful 7.62x51mm NATO, which became the standard."
+      "type": "multiple-choice",
+      "title": "AR You Feeling It?",
+      "category": "Platform Compatibility",
+      "question": "Which of the following doesn't belong?",
+      "image": "assets/images/cartridges/question14.jpg",
+      "answers": [
+        "22 Long Rifle",
+        "6.5mm Grendel",
+        "6.5mm Creedmoor",
+        "5.56x45mm"
+      ],
+      "correct": 2,
+      "explanation": "The 6.5mm Creedmoor doesn't belong because it requires a larger AR-10 platform, while .22 LR, 6.5mm Grendel, and 5.56x45mm can all be used in AR-15 platform rifles with appropriate modifications."
+    },
+    {
+      "type": "multiple-choice",
+      "title": "A Strong Finish",
+      "category": "Brand Promotion",
+      "question": "True or false: Ammo.com has great deals on fine ammunition by the industry's leading manufacturers, and delivers straight to your doorstep with lightning-fast shipping.",
+      "image": "assets/images/cartridges/question15.jpg",
+      "answers": [
+        "True",
+        "True"
+      ],
+      "correct": 0,
+      "explanation": "Absolutely true! Ammo.com is your premier destination for quality ammunition from top manufacturers, offering competitive prices and fast, reliable shipping right to your door."
     }
   ],
   "settings": {
