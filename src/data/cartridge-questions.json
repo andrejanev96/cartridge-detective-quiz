@@ -12,8 +12,8 @@
         "115, 124 or 147 grains",
         "85, 90, or 95 grains"
       ],
-      "correct": 0,
-      "explanation": "This appears to be a .45 ACP cartridge. The .45 ACP typically uses bullets weighing 185, 200, or 230 grains, making it one of the heavier handgun cartridges commonly used."
+      "correct": 2,
+      "explanation": "This appears to be a 9mm cartridge. The 9mm Parabellum typically uses bullets weighing 115, 124, or 147 grains, making it a popular intermediate-weight handgun cartridge."
     },
     {
       "type": "multiple-choice",
@@ -104,8 +104,8 @@
         "338 Lapua Magnum",
         "50 Browning Machine Gun"
       ],
-      "correct": 2,
-      "explanation": "The .338 Lapua Magnum is the preferred cartridge for Navy SEAL long-range precision rifles. It offers superior ballistics and accuracy at extended ranges compared to other options."
+      "correct": 1,
+      "explanation": "The .300 Winchester Magnum is primarily used by Navy SEALs for long-range precision work. This cartridge offers excellent ballistics and accuracy for extended-range engagements."
     },
     {
       "type": "slider",
@@ -214,7 +214,7 @@
     },
     {
       "type": "multiple-choice",
-      "title": "Winston's War Machine",
+      "title": "A Snappy Comeback",
       "category": "Historical Firearms",
       "question": "What cartridge does Winston Churchill's Tommy Gun fire?",
       "image": "assets/images/cartridges/question15.jpg",
