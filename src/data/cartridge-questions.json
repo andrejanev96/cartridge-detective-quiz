@@ -113,19 +113,19 @@
       "category": "Ballistics",
       "question": "What is its advertised muzzle velocity?",
       "image": "assets/images/cartridges/question8.jpg",
-      "min": 1050,
+      "min": 1000,
       "max": 1500,
       "unit": "fps",
       "correct": 1235,
       "tolerance": 50,
-      "step": 25,
+      "step": 5,
       "explanation": "The .44 Magnum, Elmer Keith's pride and joy, typically achieves a muzzle velocity of around 1,235 fps with a 240-grain bullet, making it one of the most powerful handgun cartridges."
     },
     {
       "type": "multiple-choice",
       "title": "Let's Get It Started",
-      "category": "Cartridge Development",
-      "question": "Which was the first successful automatic pistol cartridge?",
+      "category": "Historical Events",
+      "question": "What cartridge did Gavrilo Princip use to assassinate Archduke Franz Ferdinand?",
       "image": "assets/images/cartridges/question9.jpg",
       "answers": [
         "25 ACP",
@@ -133,8 +133,8 @@
         "45 ACP",
         "380 ACP"
       ],
-      "correct": 1,
-      "explanation": "The .32 ACP (Automatic Colt Pistol), developed by John Moses Browning in 1899, was the first successful automatic pistol cartridge and paved the way for modern semi-automatic handgun development."
+      "correct": 3,
+      "explanation": "Gavrilo Princip used a .380 ACP cartridge in his FN Model 1910 pistol to assassinate Archduke Franz Ferdinand in Sarajevo on June 28, 1914, sparking World War I."
     },
     {
       "type": "multiple-choice",
@@ -179,14 +179,14 @@
       "unit": "fps",
       "correct": 3060,
       "tolerance": 75,
-      "step": 25,
+      "step": 10,
       "explanation": "The 5.56x45mm NATO cartridge achieves approximately 3,060 fps muzzle velocity from a 20-inch barrel with the standard M855 62-grain bullet, making it highly effective at intermediate ranges."
     },
     {
       "type": "multiple-choice",
       "title": "Do You Feel Lucky?",
-      "category": "Revolver Cartridges",
-      "question": "Which cartridge was used in the famous .44 Magnum before it became the .44 Magnum?",
+      "category": "Film and Pop Culture",
+      "question": "What cartridge did Clint Eastwood's character use in Dirty Harry?",
       "image": "assets/images/cartridges/question13.jpg",
       "answers": [
         "5.7×15mmR",
@@ -194,8 +194,8 @@
         "10.9×29mmR",
         "10.9x33mmR"
       ],
-      "correct": 2,
-      "explanation": "The 10.9×29mmR (.44 Special) was the predecessor to the .44 Magnum. Elmer Keith's experiments with heavy loads in .44 Special cases led to the development of the longer .44 Magnum case."
+      "correct": 3,
+      "explanation": "Dirty Harry's iconic .44 Magnum revolver fired the 10.9x33mmR (.44 Magnum) cartridge. This powerful round became famous from Clint Eastwood's character calling it 'the most powerful handgun in the world.'"
     },
     {
       "type": "multiple-choice",
@@ -214,16 +214,18 @@
     },
     {
       "type": "multiple-choice",
-      "title": "A Strong Finish",
-      "category": "Brand Promotion",
-      "question": "True or false: Ammo.com has great deals on fine ammunition by the industry's leading manufacturers, and delivers straight to your doorstep with lightning-fast shipping.",
+      "title": "Winston's War Machine",
+      "category": "Historical Firearms",
+      "question": "What cartridge does Winston Churchill's Tommy Gun fire?",
       "image": "assets/images/cartridges/question15.jpg",
       "answers": [
-        "True",
-        "True"
+        "9x19mm Parabellum",
+        "45 ACP",
+        "32 ACP",
+        "7.65x21mm Parabellum"
       ],
-      "correct": 0,
-      "explanation": "Absolutely true! Ammo.com is your premier destination for quality ammunition from top manufacturers, offering competitive prices and fast, reliable shipping right to your door."
+      "correct": 1,
+      "explanation": "The Thompson submachine gun (Tommy Gun) that Winston Churchill is shown with fires the .45 ACP cartridge. The Tommy Gun was chambered in .45 ACP and became iconic during WWII for its stopping power."
     }
   ],
   "settings": {

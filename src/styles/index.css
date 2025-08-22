@@ -331,12 +331,37 @@ body {
 
 .question-image {
   margin-bottom: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .question-image img {
-  max-width: 100%;
+  max-width: 400px;
+  max-height: 300px;
+  width: auto;
   height: auto;
   border-radius: 8px;
+  object-fit: contain;
+}
+
+/* Mobile responsive adjustments */
+@media (max-width: 768px) {
+  .question-image img {
+    max-width: 280px;
+    max-height: 200px;
+  }
+}
+
+@media (max-width: 480px) {
+  .question-image {
+    margin-bottom: 20px;
+  }
+  
+  .question-image img {
+    max-width: 240px;
+    max-height: 180px;
+  }
 }
 
 /* Answer Styles */
@@ -1070,6 +1095,15 @@ body {
   .question-title {
     font-size: 1.1rem;
     margin-bottom: 10px;
+  }
+
+  .question-image {
+    margin-bottom: 15px;
+  }
+
+  .question-image img {
+    max-width: 200px;
+    max-height: 120px;
   }
 
   .answers-container {
