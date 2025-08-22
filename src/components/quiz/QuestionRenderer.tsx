@@ -29,7 +29,7 @@ export const QuestionRenderer: React.FC<QuestionRendererProps> = ({ question }) 
   return (
     <>
       <div className="question-container">
-        <h2 className="question-title">{question.question}</h2>
+        <h2 className="question-text">{question.question}</h2>
         {question.image && (
           <div className="question-image">
             <img src={question.image} alt="Cartridge identification" />

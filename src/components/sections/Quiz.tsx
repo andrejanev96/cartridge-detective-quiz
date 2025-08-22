@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Logo } from '@/components/ui/Logo';
 import { Button } from '@/components/ui/Button';
 import { QuestionRenderer } from '@/components/quiz/QuestionRenderer';
 import { useQuizStore } from '@/stores/quizStore';
@@ -70,40 +69,36 @@ export const Quiz: React.FC = () => {
       style={{ position: 'relative', overflow: 'hidden' }}
     >
       <div className="container">
-        <div className="quiz-title-section">
-          <AnimatePresence mode="wait">
-            {currentQ.title && (
-              <motion.div 
-                className="title-bullet"
-                key={`title-${currentQuestion}`}
-                initial={{ x: -400, opacity: 0 }}
-                animate={{ x: 0, opacity: 1 }}
-                exit={{ x: 400, opacity: 0 }}
-                transition={{ 
-                  duration: 0.5,
-                  ease: "easeOut",
-                  delay: isTransitioning ? 0 : 0.1
-                }}
-              >
-                <h2 className="question-title">{currentQ.title}</h2>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
-        
         <div className="quiz-header">
           <div className="quiz-header-top">
-            <Logo size="small" />
-            <div className="progress-section">
-              <div className="question-counter">
-                Question {currentQuestion + 1} of {quizData.length}
-              </div>
-              {currentQ.category && (
-                <div className="question-category">
-                  {currentQ.category}
-                </div>
-              )}
+            <div className="question-counter">
+              Question {currentQuestion + 1} of {quizData.length}
             </div>
+            <div className="header-center">
+              <AnimatePresence mode="wait">
+                {currentQ.title && (
+                  <motion.div 
+                    className="title-bullet-header"
+                    key={`title-${currentQuestion}`}
+                    initial={{ x: -200, opacity: 0 }}
+                    animate={{ x: 0, opacity: 1 }}
+                    exit={{ x: 200, opacity: 0 }}
+                    transition={{ 
+                      duration: 0.4,
+                      ease: "easeOut",
+                      delay: isTransitioning ? 0 : 0.1
+                    }}
+                  >
+                    <h2 className="question-title-header">{currentQ.title}</h2>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+            {currentQ.category && (
+              <div className="question-category">
+                {currentQ.category}
+              </div>
+            )}
           </div>
           <div className="progress-bar-container">
             <div 
