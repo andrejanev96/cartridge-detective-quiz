@@ -118,7 +118,7 @@
       "unit": "fps",
       "correct": 1235,
       "tolerance": 50,
-      "step": 5,
+      "step": 1,
       "explanation": "The .44 Magnum, Elmer Keith's pride and joy, typically achieves a muzzle velocity of around 1,235 fps with a 240-grain bullet, making it one of the most powerful handgun cartridges."
     },
     {
