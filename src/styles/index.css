@@ -361,42 +361,55 @@ body {
     min-height: 100vh;
     min-height: 100dvh;
     justify-content: flex-start;
-    padding: 16px 40px;
+    padding: 12px 32px;
   }
   
   .quiz-header {
-    margin-bottom: 18px;
+    margin-bottom: 12px;
   }
   
   .quiz-header-top {
-    margin-bottom: 12px;
-    min-height: 45px;
+    margin-bottom: 10px;
+    min-height: 40px;
   }
   
   .title-bullet-header {
-    max-width: 400px;
-    padding: 10px 18px;
+    max-width: 350px;
+    padding: 8px 16px;
   }
   
   .question-title-header {
-    font-size: 1.2rem;
+    font-size: 1.1rem;
+    line-height: 1.2;
   }
   
   .question-container {
-    margin-bottom: 25px;
+    margin-bottom: 20px;
   }
   
+  .question-image {
+    margin-bottom: 15px;
+  }
+  
+  /* Smaller images for landscape tablets to prevent scrolling */
   .question-image img {
-    max-width: 400px;
-    max-height: 280px;
+    max-width: 320px;
+    max-height: 220px;
   }
   
   .answers-container {
-    margin-bottom: 25px;
+    gap: 8px;
+    margin-bottom: 20px;
+  }
+  
+  .answer-option {
+    padding: 12px;
+    font-size: 14px;
+    min-height: 44px;
   }
   
   .quiz-navigation {
-    margin-top: 20px;
+    margin-top: 15px;
   }
 }
 
@@ -582,16 +595,17 @@ body {
 /* Large Tablets: iPad, standard tablets (768px - 1024px) */
 @media (min-width: 768px) and (max-width: 1024px) {
   .container {
-    padding: 20px 32px;
-    max-width: 750px;
+    padding: 16px 28px;
+    max-width: 700px;
   }
   
   .title-bullet-header {
-    max-width: 500px;
+    max-width: 480px;
+    padding: 10px 18px;
   }
   
   .question-title-header {
-    font-size: 1.4rem;
+    font-size: 1.3rem;
     /* Allow 2-line wrap for long titles on tablets too */
     white-space: normal;
     display: -webkit-box;
@@ -600,13 +614,37 @@ body {
     overflow: hidden;
   }
   
+  .quiz-header {
+    margin-bottom: 16px;
+  }
+  
+  .question-container {
+    margin-bottom: 25px;
+  }
+  
+  /* Reduce image sizes to prevent scrolling */
+  .question-image {
+    margin-bottom: 18px;
+  }
+  
   .question-image img {
-    max-width: 450px;
-    max-height: 350px;
+    max-width: 380px;
+    max-height: 280px;
   }
   
   .answers-container {
-    max-width: 600px;
+    max-width: 580px;
+    gap: 10px;
+    margin-bottom: 25px;
+  }
+  
+  .answer-option {
+    padding: 14px;
+    font-size: 15px;
+  }
+  
+  .quiz-navigation {
+    margin-top: 25px;
   }
 }
 

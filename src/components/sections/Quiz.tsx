@@ -236,7 +236,7 @@ export const Quiz: React.FC = () => {
               disabled={isNextDisabled || isTransitioning}
             >
               {isTransitioning ? 'Firing...' : 
-               currentQuestion === quizData.length - 1 ? 'Complete Challenge' : 'Next Cartridge'}
+               currentQuestion === quizData.length - 1 ? 'Complete Challenge' : 'Next Challenge'}
             </Button>
           </div>
         </div>
