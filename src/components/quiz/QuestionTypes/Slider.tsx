@@ -118,6 +118,7 @@ export const Slider: React.FC<SliderProps> = ({ question }) => {
           className="slider-control-btn"
           onClick={handleDecrease}
           disabled={sliderValue <= minValue}
+          aria-label="Decrease value"
         >
           −
         </button>
@@ -129,6 +130,7 @@ export const Slider: React.FC<SliderProps> = ({ question }) => {
           className="slider-control-btn"
           onClick={handleIncrease}
           disabled={sliderValue >= maxValue}
+          aria-label="Increase value"
         >
           +
         </button>

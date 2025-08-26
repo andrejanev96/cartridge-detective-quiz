@@ -32,8 +32,7 @@ export const Landing: React.FC = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4, duration: 0.6 }}
           >
-            Test your ammunition knowledge with 15 challenging identification challenges.
-            From historical conflicts to modern ballistics - can you crack the code?
+            Test your ammunition knowledge with 15 challenging questions. From historical conflicts to modern ballistics, can you crack the code?
           </motion.p>
 
           <motion.div 
