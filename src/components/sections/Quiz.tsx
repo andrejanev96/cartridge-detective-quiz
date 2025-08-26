@@ -72,7 +72,8 @@ export const Quiz: React.FC = () => {
         <div className="quiz-header">
           <div className="quiz-header-top">
             <div className="question-counter">
-              Question {currentQuestion + 1} of {quizData.length}
+              <span className="question-counter-full">Question {currentQuestion + 1} of {quizData.length}</span>
+              <span className="question-counter-mobile">Question {currentQuestion + 1}</span>
             </div>
             <div className="header-center">
               <AnimatePresence mode="wait">
@@ -95,7 +96,7 @@ export const Quiz: React.FC = () => {
               </AnimatePresence>
             </div>
             {currentQ.category && (
-              <div className="question-category">
+              <div className="question-category question-category-desktop">
                 {currentQ.category}
               </div>
             )}
