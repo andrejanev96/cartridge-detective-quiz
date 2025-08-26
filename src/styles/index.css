@@ -211,9 +211,11 @@ body {
   margin: 0;
   line-height: 1.3;
   text-align: center;
-  white-space: nowrap;
+  white-space: normal;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
   overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 /* Legacy title support (if needed) */
