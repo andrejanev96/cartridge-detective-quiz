@@ -8,7 +8,12 @@ interface SliderProps {
 
 export const Slider: React.FC<SliderProps> = ({ question }) => {
   const { selectAnswer } = useQuizStore();
-  const initialValue = Math.round((question.min + question.max) / 2);
+  
+  // For preset-only sliders, start with the first preset value
+  const initialValue = question.presetOnly && question.presetValues 
+    ? question.presetValues[0] 
+    : Math.round(((question.min || 0) + (question.max || 100)) / 2);
+  
   const [sliderValue, setSliderValue] = useState(initialValue);
 
   useEffect(() => {
@@ -16,7 +21,13 @@ export const Slider: React.FC<SliderProps> = ({ question }) => {
   }, [sliderValue, selectAnswer]);
 
   const generatePresets = () => {
-    const range = question.max - question.min;
+    // If preset-only mode, use the specified values
+    if (question.presetOnly && question.presetValues) {
+      return question.presetValues.sort((a, b) => a - b);
+    }
+
+    // Otherwise, use the original logic
+    const range = (question.max || 100) - (question.min || 0);
     let interval;
 
     if (question.unit === 'fps') {
@@ -31,14 +42,16 @@ export const Slider: React.FC<SliderProps> = ({ question }) => {
       interval = 10;
     }
 
-    const presets = [question.min];
-    for (let val = question.min + interval; val < question.max; val += interval) {
+    const min = question.min || 0;
+    const max = question.max || 100;
+    const presets = [min];
+    for (let val = min + interval; val < max; val += interval) {
       const roundedVal = Math.round(val / interval) * interval;
-      if (roundedVal > question.min && roundedVal < question.max && !presets.includes(roundedVal)) {
+      if (roundedVal > min && roundedVal < max && !presets.includes(roundedVal)) {
         presets.push(roundedVal);
       }
     }
-    presets.push(question.max);
+    presets.push(max);
 
     return presets.sort((a, b) => a - b);
   };
@@ -47,37 +60,64 @@ export const Slider: React.FC<SliderProps> = ({ question }) => {
   const step = question.step || 10;
 
   const handleDecrease = () => {
-    const newValue = Math.max(question.min, sliderValue - step);
-    setSliderValue(newValue);
+    if (question.presetOnly && question.presetValues) {
+      const currentIndex = presets.indexOf(sliderValue);
+      if (currentIndex > 0) {
+        setSliderValue(presets[currentIndex - 1]);
+      }
+    } else {
+      const newValue = Math.max(question.min || 0, sliderValue - step);
+      setSliderValue(newValue);
+    }
   };
 
   const handleIncrease = () => {
-    const newValue = Math.min(question.max, sliderValue + step);
-    setSliderValue(newValue);
+    if (question.presetOnly && question.presetValues) {
+      const currentIndex = presets.indexOf(sliderValue);
+      if (currentIndex < presets.length - 1) {
+        setSliderValue(presets[currentIndex + 1]);
+      }
+    } else {
+      const newValue = Math.min(question.max || 100, sliderValue + step);
+      setSliderValue(newValue);
+    }
   };
+
+  const isPresetOnly = question.presetOnly && question.presetValues;
+  const minValue = isPresetOnly ? presets[0] : (question.min || 0);
+  const maxValue = isPresetOnly ? presets[presets.length - 1] : (question.max || 100);
 
   return (
     <div className="slider-container">
-      <div className="slider-label">
-        Range: {question.min} - {question.max} {question.unit}
-      </div>
+      {isPresetOnly ? (
+        <div className="slider-label">
+          Select the correct value:
+        </div>
+      ) : (
+        <div className="slider-label">
+          Range: {question.min} - {question.max} {question.unit}
+        </div>
+      )}
       
-      <input
-        type="range"
-        className="slider"
-        min={question.min}
-        max={question.max}
-        step={step}
-        value={sliderValue}
-        onChange={(e) => setSliderValue(parseInt(e.target.value))}
-      />
+      {/* Only show slider for non-preset-only questions */}
+      {!isPresetOnly && (
+        <input
+          type="range"
+          className="slider"
+          min={question.min}
+          max={question.max}
+          step={step}
+          value={sliderValue}
+          onChange={(e) => setSliderValue(parseInt(e.target.value))}
+        />
+      )}
       
       <div className="slider-controls">
         <button 
           type="button"
           className="slider-control-btn"
           onClick={handleDecrease}
-          disabled={sliderValue <= question.min}
+          disabled={sliderValue <= minValue}
         >
           −
         </button>
@@ -88,7 +128,7 @@ export const Slider: React.FC<SliderProps> = ({ question }) => {
           type="button"
           className="slider-control-btn"
           onClick={handleIncrease}
-          disabled={sliderValue >= question.max}
+          disabled={sliderValue >= maxValue}
         >
           +
         </button>

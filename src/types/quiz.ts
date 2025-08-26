@@ -28,12 +28,14 @@ export interface TextInputQuestion extends BaseQuestion {
 
 export interface SliderQuestion extends BaseQuestion {
   type: 'slider';
-  min: number;
-  max: number;
+  min?: number;
+  max?: number;
   unit: string;
   correct: number;
-  tolerance: number;
+  tolerance?: number;
   step?: number;
+  presetOnly?: boolean;
+  presetValues?: number[];
 }
 
 export interface DragDropQuestion extends BaseQuestion {
