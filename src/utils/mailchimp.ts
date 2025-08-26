@@ -61,18 +61,18 @@ export const subscribeToMailChimp = async (
     if (response.ok) {
       return true;
     } else {
-      const error = await response.json();
+      await response.json(); // Read response to avoid memory leaks
       return false;
     }
-  } catch (error) {
+  } catch {
     return false;
   }
 };
 
 // Send quiz results email (this would typically be done server-side)
 export const sendQuizResultsEmail = async (
-  email: string,
-  quizData: {
+  _email: string,
+  _quizData: {
     score: number;
     totalQuestions: number;
     tier: any;

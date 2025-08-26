@@ -259,7 +259,7 @@ export const useQuizStore = create<QuizStore>((set, get) => ({
     return achievements;
   },
 
-  trackEvent: (eventName: string, data?: Record<string, any>) => {
+  trackEvent: (_eventName: string, _data?: Record<string, any>) => {
     // Legacy method - now handled by analytics utils
   },
 }));
