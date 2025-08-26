@@ -998,8 +998,9 @@ body {
   font-weight: bold;
   color: #bf9400;
   margin: 0;
-  min-width: 120px;
+  width: 120px;
   text-align: center;
+  flex-shrink: 0;
 }
 
 .slider-presets {
