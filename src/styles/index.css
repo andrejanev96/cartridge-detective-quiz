@@ -630,6 +630,63 @@ body {
     margin: 0 auto;
     max-width: 350px;
   }
+  
+  /* Compact mode for content-heavy questions */
+  .compact-mode.question-container {
+    margin-bottom: 12px;
+  }
+  
+  .compact-mode .question-text {
+    font-size: 0.95rem;
+    margin-bottom: 10px;
+    line-height: 1.3;
+  }
+  
+  .compact-mode .question-image {
+    margin-bottom: 12px;
+  }
+  
+  .compact-mode .question-image img {
+    max-width: 260px;
+    max-height: 180px;
+  }
+  
+  .compact-mode .answers-container {
+    gap: 6px;
+    margin-bottom: 12px;
+  }
+  
+  .compact-mode .answer-option {
+    padding: 10px;
+    font-size: 13px;
+    min-height: 40px;
+  }
+  
+  .compact-mode .slider-container {
+    margin-bottom: 12px;
+  }
+  
+  .compact-mode .slider-controls {
+    gap: 15px;
+  }
+  
+  .compact-mode .slider-control-btn {
+    width: 38px;
+    height: 38px;
+    font-size: 20px;
+  }
+  
+  .compact-mode .slider-presets {
+    gap: 4px;
+    margin-top: 8px;
+  }
+  
+  .compact-mode .slider-preset-btn {
+    padding: 6px 10px;
+    font-size: 11px;
+    min-height: 32px;
+    min-width: 38px;
+  }
 }
 
 /* Tablet Portrait: iPad Mini, small tablets (429px - 767px) */

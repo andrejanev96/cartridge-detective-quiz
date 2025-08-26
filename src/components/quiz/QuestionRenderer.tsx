@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Question } from '@/types/quiz';
 import { MultipleChoice } from './QuestionTypes/MultipleChoice';
 import { TrueFalse } from './QuestionTypes/TrueFalse';
@@ -12,6 +12,8 @@ interface QuestionRendererProps {
 
 export const QuestionRenderer: React.FC<QuestionRendererProps> = ({ question }) => {
   const { currentQuestion, quizData } = useQuizStore();
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [isCompactMode, setIsCompactMode] = useState(false);
 
   // Preload next question image for better UX
   useEffect(() => {
@@ -21,6 +23,50 @@ export const QuestionRenderer: React.FC<QuestionRendererProps> = ({ question }) 
       img.src = nextQuestion.image;
     }
   }, [currentQuestion, quizData]);
+
+  // Check if content fits in mobile viewport
+  useEffect(() => {
+    if (window.innerWidth <= 428) { // Mobile only
+      const checkContentFit = () => {
+        const viewportHeight = window.innerHeight;
+        const availableHeight = viewportHeight - 140; // Account for header + button space
+        
+        // Estimate content height based on question characteristics
+        let estimatedHeight = 0;
+        
+        // Header space
+        estimatedHeight += 80;
+        
+        // Question text (if present)
+        if (question.question && question.question.length > 0) {
+          estimatedHeight += 60; // Text height
+        }
+        
+        // Image height
+        if (question.image) {
+          estimatedHeight += 220; // Base image + margins
+        }
+        
+        // Answer options height
+        if (question.type === 'multiple-choice') {
+          estimatedHeight += 200; // 4 options + gaps
+        } else if (question.type === 'slider') {
+          estimatedHeight += 160; // Slider + controls
+        } else {
+          estimatedHeight += 100; // Other types
+        }
+        
+        // Navigation button
+        estimatedHeight += 60;
+        
+        setIsCompactMode(estimatedHeight > availableHeight);
+      };
+
+      checkContentFit();
+      window.addEventListener('resize', checkContentFit);
+      return () => window.removeEventListener('resize', checkContentFit);
+    }
+  }, [question]);
   const renderQuestionType = () => {
     switch (question.type) {
       case 'multiple-choice':
@@ -39,7 +85,10 @@ export const QuestionRenderer: React.FC<QuestionRendererProps> = ({ question }) 
 
   return (
     <>
-      <div className="question-container">
+      <div 
+        ref={containerRef}
+        className={`question-container ${isCompactMode ? 'compact-mode' : ''}`}
+      >
         {question.question && <h2 className="question-text">{question.question}</h2>}
         {question.image && (
           <div className="question-image">
@@ -52,7 +101,9 @@ export const QuestionRenderer: React.FC<QuestionRendererProps> = ({ question }) 
           </div>
         )}
       </div>
-      {renderQuestionType()}
+      <div className={isCompactMode ? 'compact-mode' : ''}>
+        {renderQuestionType()}
+      </div>
     </>
   );
 };
