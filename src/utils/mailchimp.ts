@@ -31,13 +31,7 @@ export const subscribeToMailChimp = async (
   const LIST_ID = import.meta.env.VITE_MAILCHIMP_LIST_ID;
 
   if (!API_KEY || !SERVER_PREFIX || !LIST_ID) {
-    console.warn('MailChimp environment variables not configured');
-    // For development, just log the data
-    console.log('Would subscribe:', {
-      email,
-      subscribeToBulletin,
-      quizData,
-    });
+    // MailChimp environment variables not configured - skip subscription
     return true;
   }
 
@@ -65,15 +59,12 @@ export const subscribeToMailChimp = async (
     });
 
     if (response.ok) {
-      console.log('Successfully subscribed to MailChimp');
       return true;
     } else {
       const error = await response.json();
-      console.error('MailChimp subscription failed:', error);
       return false;
     }
   } catch (error) {
-    console.error('MailChimp API error:', error);
     return false;
   }
 };
@@ -92,12 +83,9 @@ export const sendQuizResultsEmail = async (
   // In a real implementation, this would call your backend API
   // which would then send a detailed email with results
   
-  console.log('Sending quiz results email to:', email, quizData);
-  
   // For now, simulate the email sending
   return new Promise((resolve) => {
     setTimeout(() => {
-      console.log('Quiz results email sent successfully');
       resolve(true);
     }, 1000);
   });

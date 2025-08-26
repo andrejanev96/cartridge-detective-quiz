@@ -27,10 +27,8 @@ export const initializeGA4 = (measurementId: string) => {
 export const trackEvent = (eventName: string, parameters?: Record<string, any>) => {
   if (typeof window.gtag !== 'undefined') {
     window.gtag('event', eventName, parameters);
-  } else {
-    // Fallback for development
-    console.log('Analytics Event:', eventName, parameters);
   }
+  // Analytics not available - silently skip
 };
 
 // Quiz-specific tracking events

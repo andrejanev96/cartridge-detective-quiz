@@ -52,7 +52,6 @@ export const EmailCapture: React.FC = () => {
       await new Promise(resolve => setTimeout(resolve, 400));
       submitEmail(data.email, data.subscribeToBulletin);
     } catch (error) {
-      console.error('Email submission error:', error);
       setIsSubmitting(false);
       setIsFiring(false);
     }

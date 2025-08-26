@@ -201,7 +201,6 @@ export const useQuizStore = create<QuizStore>((set, get) => ({
       });
 
     } catch (error) {
-      console.error('Email/subscription error:', error);
       // Continue to results even if email fails
     }
     
@@ -261,7 +260,6 @@ export const useQuizStore = create<QuizStore>((set, get) => ({
   },
 
   trackEvent: (eventName: string, data?: Record<string, any>) => {
-    // This is now handled by the analytics utils
-    console.log('Legacy Analytics Event:', eventName, data);
+    // Legacy method - now handled by analytics utils
   },
 }));
