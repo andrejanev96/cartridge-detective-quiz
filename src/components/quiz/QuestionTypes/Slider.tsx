@@ -44,6 +44,17 @@ export const Slider: React.FC<SliderProps> = ({ question }) => {
   };
 
   const presets = generatePresets();
+  const step = question.step || 10;
+
+  const handleDecrease = () => {
+    const newValue = Math.max(question.min, sliderValue - step);
+    setSliderValue(newValue);
+  };
+
+  const handleIncrease = () => {
+    const newValue = Math.min(question.max, sliderValue + step);
+    setSliderValue(newValue);
+  };
 
   return (
     <div className="slider-container">
@@ -56,13 +67,31 @@ export const Slider: React.FC<SliderProps> = ({ question }) => {
         className="slider"
         min={question.min}
         max={question.max}
-        step={question.step || 10}
+        step={step}
         value={sliderValue}
         onChange={(e) => setSliderValue(parseInt(e.target.value))}
       />
       
-      <div className="slider-value">
-        {sliderValue} {question.unit}
+      <div className="slider-controls">
+        <button 
+          type="button"
+          className="slider-control-btn"
+          onClick={handleDecrease}
+          disabled={sliderValue <= question.min}
+        >
+          −
+        </button>
+        <div className="slider-value">
+          {sliderValue} {question.unit}
+        </div>
+        <button 
+          type="button"
+          className="slider-control-btn"
+          onClick={handleIncrease}
+          disabled={sliderValue >= question.max}
+        >
+          +
+        </button>
       </div>
       
       <div className="slider-presets">
@@ -70,7 +99,7 @@ export const Slider: React.FC<SliderProps> = ({ question }) => {
           <button
             key={preset}
             type="button"
-            className="slider-preset-btn"
+            className={`slider-preset-btn ${sliderValue === preset ? 'active' : ''}`}
             onClick={() => setSliderValue(preset)}
           >
             {preset}

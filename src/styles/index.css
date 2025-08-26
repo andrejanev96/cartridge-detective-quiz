@@ -895,11 +895,54 @@ body {
   border: none;
 }
 
+/* Slider controls */
+.slider-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  margin-bottom: 15px;
+}
+
+.slider-control-btn {
+  width: 44px;
+  height: 44px;
+  border: 2px solid #bf9400;
+  background: #1d1d1d;
+  color: #bf9400;
+  border-radius: 50%;
+  font-size: 24px;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+
+.slider-control-btn:hover:not(:disabled) {
+  background: #bf9400;
+  color: #1d1d1d;
+  transform: scale(1.05);
+}
+
+.slider-control-btn:active:not(:disabled) {
+  transform: scale(0.95);
+}
+
+.slider-control-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
 .slider-value {
   font-size: 1.2rem;
   font-weight: bold;
   color: #bf9400;
-  margin-bottom: 20px;
+  margin: 0;
+  min-width: 120px;
+  text-align: center;
 }
 
 .slider-presets {
@@ -924,6 +967,13 @@ body {
 .slider-preset-btn:hover {
   background: #bf9400;
   border-color: #bf9400;
+  transform: translateY(-1px);
+}
+
+.slider-preset-btn.active {
+  background: #bf9400;
+  border-color: #bf9400;
+  color: #1d1d1d;
 }
 
 /* Email Capture */
