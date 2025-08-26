@@ -32,8 +32,8 @@ export const Landing: React.FC = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4, duration: 0.6 }}
           >
-            Can you identify these obscure military and sporting cartridges? 
-            Test your expertise with our challenging cartridge identification quiz.
+            Test your ammunition knowledge with 15 challenging identification challenges.
+            From historical conflicts to modern ballistics - can you crack the code?
           </motion.p>
 
           <motion.div 
@@ -44,15 +44,11 @@ export const Landing: React.FC = () => {
           >
             <div className="detail-item">
               <span className="detail-number">{quizData.length || 15}</span>
-              <span className="detail-label">Cartridges</span>
+              <span className="detail-label">Rounds</span>
             </div>
             <div className="detail-item">
               <span className="detail-number">5-7</span>
               <span className="detail-label">Minutes</span>
-            </div>
-            <div className="detail-item">
-              <span className="detail-number">5</span>
-              <span className="detail-label">Skill Levels</span>
             </div>
           </motion.div>
 

@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import { Question, UserAnswer, QuizState, Tier } from '@/types/quiz';
 import { subscribeToMailChimp, sendQuizResultsEmail } from '@/utils/mailchimp';
 import { trackQuizEvents } from '@/utils/analytics';
+import questionsData from '@/data/cartridge-questions.json';
 
 const tiers: Tier[] = [
   {
@@ -72,21 +73,7 @@ export const useQuizStore = create<QuizStore>((set, get) => ({
   },
 
   loadQuestions: async () => {
-    try {
-      const basePath = import.meta.env.DEV ? '' : '/cartridge-detective-quiz';
-      const response = await fetch(`${basePath}/cartridge-questions.json`);
-      const allQuestions = await response.json();
-      get().generateQuiz(allQuestions);
-    } catch (error) {
-      console.error('Error loading questions:', error);
-      // Fallback to embedded questions if needed
-      get().generateQuiz({
-        easy: [],
-        medium: [],
-        hard: [],
-        settings: { questionsPerDifficulty: { easy: 5, medium: 6, hard: 4 } }
-      });
-    }
+    get().generateQuiz(questionsData);
   },
 
   generateQuiz: (allQuestions) => {

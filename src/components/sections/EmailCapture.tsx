@@ -128,7 +128,7 @@ export const EmailCapture: React.FC = () => {
                 type="submit" 
                 disabled={!isValid || isSubmitting}
               >
-                {isSubmitting ? (isFiring ? 'FIRING! 💥' : 'Reloading...') : 'FIRE! 🔫'}
+                {isSubmitting ? (isFiring ? 'FIRING! 💥' : 'Reloading...') : 'FIRE! 🎯'}
               </Button>
             </div>
           </motion.form>
