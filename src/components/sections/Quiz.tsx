@@ -40,11 +40,67 @@ export const Quiz: React.FC = () => {
   // Add keyboard navigation
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
+      // Number keys for multiple choice
       if (e.key >= '1' && e.key <= '4' && currentQ?.type === 'multiple-choice') {
         const answerIndex = parseInt(e.key) - 1;
         if (answerIndex < (currentQ as any).answers.length) {
           useQuizStore.getState().selectAnswer(answerIndex);
         }
+      }
+      
+      // Arrow keys for multiple choice navigation
+      if ((e.key === 'ArrowUp' || e.key === 'ArrowDown') && currentQ?.type === 'multiple-choice') {
+        const answers = (currentQ as any).answers;
+        const currentIndex = selectedAnswer !== null ? selectedAnswer : -1;
+        let newIndex;
+        
+        if (e.key === 'ArrowDown') {
+          newIndex = currentIndex < answers.length - 1 ? currentIndex + 1 : 0;
+        } else {
+          newIndex = currentIndex > 0 ? currentIndex - 1 : answers.length - 1;
+        }
+        
+        useQuizStore.getState().selectAnswer(newIndex);
+      }
+      
+      // Arrow keys for slider controls
+      if ((e.key === 'ArrowLeft' || e.key === 'ArrowRight') && currentQ?.type === 'slider') {
+        const sliderQuestion = currentQ as any;
+        const currentValue = selectedAnswer || (sliderQuestion.presetOnly ? sliderQuestion.presetValues[0] : sliderQuestion.min);
+        
+        if (sliderQuestion.presetOnly && sliderQuestion.presetValues) {
+          const presets = sliderQuestion.presetValues.sort((a: number, b: number) => a - b);
+          const currentIndex = presets.indexOf(currentValue);
+          let newIndex;
+          
+          if (e.key === 'ArrowRight') {
+            newIndex = currentIndex < presets.length - 1 ? currentIndex + 1 : currentIndex;
+          } else {
+            newIndex = currentIndex > 0 ? currentIndex - 1 : currentIndex;
+          }
+          
+          useQuizStore.getState().selectAnswer(presets[newIndex]);
+        } else {
+          const step = sliderQuestion.step || 10;
+          const min = sliderQuestion.min || 0;
+          const max = sliderQuestion.max || 100;
+          let newValue;
+          
+          if (e.key === 'ArrowRight') {
+            newValue = Math.min(max, currentValue + step);
+          } else {
+            newValue = Math.max(min, currentValue - step);
+          }
+          
+          useQuizStore.getState().selectAnswer(newValue);
+        }
+      }
+      
+      // Spacebar for true/false toggle
+      if (e.key === ' ' && currentQ?.type === 'true-false') {
+        e.preventDefault();
+        const newAnswer = selectedAnswer === null ? true : !selectedAnswer;
+        useQuizStore.getState().selectAnswer(newAnswer);
       }
       
       if (e.key === 'Enter' && !isNextDisabled) {
@@ -54,7 +110,7 @@ export const Quiz: React.FC = () => {
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [currentQ, isNextDisabled, nextQuestion]);
+  }, [currentQ, isNextDisabled, selectedAnswer, handleNextQuestion]);
 
   if (!currentQ) {
     return <div>Loading...</div>;
