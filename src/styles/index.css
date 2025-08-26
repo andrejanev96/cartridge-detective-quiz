@@ -355,6 +355,51 @@ body {
   object-fit: contain;
 }
 
+/* Tablet Landscape: iPad and similar in landscape mode */
+@media (min-width: 768px) and (max-width: 1024px) and (orientation: landscape) {
+  .container {
+    min-height: 100vh;
+    min-height: 100dvh;
+    justify-content: flex-start;
+    padding: 16px 40px;
+  }
+  
+  .quiz-header {
+    margin-bottom: 18px;
+  }
+  
+  .quiz-header-top {
+    margin-bottom: 12px;
+    min-height: 45px;
+  }
+  
+  .title-bullet-header {
+    max-width: 400px;
+    padding: 10px 18px;
+  }
+  
+  .question-title-header {
+    font-size: 1.2rem;
+  }
+  
+  .question-container {
+    margin-bottom: 25px;
+  }
+  
+  .question-image img {
+    max-width: 400px;
+    max-height: 280px;
+  }
+  
+  .answers-container {
+    margin-bottom: 25px;
+  }
+  
+  .quiz-navigation {
+    margin-top: 20px;
+  }
+}
+
 /* Mobile responsive adjustments */
 
 /* iPhone 14 Pro and similar (393px wide) optimizations */
@@ -456,6 +501,112 @@ body {
     padding: 14px;
     font-size: 15px;
     min-height: 48px;
+  }
+}
+
+/* Tablet Portrait: iPad Mini, small tablets (429px - 767px) */
+@media (min-width: 429px) and (max-width: 767px) {
+  .container {
+    padding: 16px 24px;
+    min-height: 100vh;
+    min-height: 100dvh;
+    justify-content: flex-start;
+  }
+  
+  /* Show full question counter on tablets */
+  .question-counter-mobile {
+    display: none;
+  }
+  
+  .question-counter-full {
+    display: block;
+  }
+  
+  /* Keep categories visible on tablets */
+  .question-category-desktop {
+    display: block;
+  }
+  
+  /* Optimize header for tablet */
+  .quiz-header-top {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 15px;
+    min-height: 50px;
+  }
+  
+  .title-bullet-header {
+    max-width: 450px;
+    padding: 12px 20px;
+  }
+  
+  .question-title-header {
+    font-size: 1.3rem;
+    line-height: 1.3;
+    white-space: normal;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  
+  .question-counter {
+    font-size: 15px;
+    text-align: left;
+  }
+  
+  .question-category {
+    font-size: 16px;
+    text-align: right;
+  }
+  
+  /* Optimize content spacing */
+  .question-image img {
+    max-width: 400px;
+    max-height: 300px;
+  }
+  
+  .answers-container {
+    max-width: 550px;
+  }
+  
+  .answer-option {
+    padding: 16px;
+    font-size: 16px;
+    min-height: 48px;
+  }
+}
+
+/* Large Tablets: iPad, standard tablets (768px - 1024px) */
+@media (min-width: 768px) and (max-width: 1024px) {
+  .container {
+    padding: 20px 32px;
+    max-width: 750px;
+  }
+  
+  .title-bullet-header {
+    max-width: 500px;
+  }
+  
+  .question-title-header {
+    font-size: 1.4rem;
+    /* Allow 2-line wrap for long titles on tablets too */
+    white-space: normal;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  
+  .question-image img {
+    max-width: 450px;
+    max-height: 350px;
+  }
+  
+  .answers-container {
+    max-width: 600px;
   }
 }
 
