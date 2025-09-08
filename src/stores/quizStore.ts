@@ -96,7 +96,10 @@ export const useQuizStore = create<QuizStore>((set, get) => ({
       }
     });
 
-    set({ quizData });
+    // Randomize the final quiz order (shuffle all questions together)
+    const shuffledQuizData = quizData.sort(() => Math.random() - 0.5);
+
+    set({ quizData: shuffledQuizData });
   },
 
   selectAnswer: (answer) => {

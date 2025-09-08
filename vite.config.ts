@@ -5,6 +5,11 @@
   export default defineConfig({
     base: '/cartridge-detective-quiz/',
     plugins: [react()],
+    server: {
+      headers: {
+        'Permissions-Policy': 'accelerometer=(), gyroscope=(), magnetometer=(), camera=(), microphone=(), payment=(), usb=()'
+      }
+    },
     resolve: {
       alias: {
         '@': '/src',

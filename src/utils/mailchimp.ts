@@ -1,21 +1,4 @@
-// MailChimp API integration
-// You'll need to set these environment variables:
-// VITE_MAILCHIMP_API_KEY=your_api_key
-// VITE_MAILCHIMP_SERVER_PREFIX=your_server_prefix (e.g., us12)
-// VITE_MAILCHIMP_LIST_ID=your_list_id
-
-interface MailChimpSubscriber {
-  email_address: string;
-  status: 'subscribed' | 'unsubscribed';
-  tags?: string[];
-  merge_fields?: {
-    FNAME?: string;
-    LNAME?: string;
-    QUIZ_SCORE?: number;
-    QUIZ_TIER?: string;
-    QUIZ_DATE?: string;
-  };
-}
+// MailChimp client-side integration using iframe form submission
 
 export const subscribeToMailChimp = async (
   email: string,
@@ -26,50 +9,84 @@ export const subscribeToMailChimp = async (
     accuracy: number;
   }
 ): Promise<boolean> => {
-  const API_KEY = import.meta.env.VITE_MAILCHIMP_API_KEY;
-  const SERVER_PREFIX = import.meta.env.VITE_MAILCHIMP_SERVER_PREFIX;
-  const LIST_ID = import.meta.env.VITE_MAILCHIMP_LIST_ID;
+  console.log('Subscription request:', { email, subscribeToBulletin, quizData });
 
-  if (!API_KEY || !SERVER_PREFIX || !LIST_ID) {
-    // MailChimp environment variables not configured - skip subscription
-    return true;
-  }
-
-  // Only subscribe users who checked the newsletter checkbox
+  // STRICT CONSENT LOGIC: Only proceed if user explicitly consented
   if (!subscribeToBulletin) {
-    return true; // Skip MailChimp entirely if user doesn't want newsletter
+    console.log('User did NOT consent to newsletter - skipping MailChimp entirely');
+    return true; // Return success but skip MailChimp
   }
+
+  console.log('User CONSENTED to newsletter - proceeding with MailChimp subscription');
+
+  // MailChimp iframe submission (no CORS issues)
+  const MAILCHIMP_URL = 'https://ammo.us2.list-manage.com/subscribe/post';
+  const USER_ID = '92e5fabeec50377fd6b0c666d';
+  const LIST_ID = '835c3fc179';
+  const FORM_ID = '002ec0e1f0';
 
   try {
-    const url = `https://${SERVER_PREFIX}.api.mailchimp.com/3.0/lists/${LIST_ID}/members`;
+    // Create hidden form and iframe
+    const iframe = document.createElement('iframe');
+    iframe.style.display = 'none';
+    iframe.name = 'mailchimp_frame_' + Date.now();
     
-    const subscriberData: MailChimpSubscriber = {
-      email_address: email,
-      status: 'subscribed', // Only subscribed users reach this point
-      tags: ['Cartridge Quiz Contact'],
-      merge_fields: {
-        QUIZ_SCORE: quizData?.score,
-        QUIZ_TIER: quizData?.tier,
-        QUIZ_DATE: new Date().toISOString().split('T')[0],
-      },
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = MAILCHIMP_URL;
+    form.target = iframe.name;
+    form.style.display = 'none';
+
+    // Add form fields matching MailChimp's expected format
+    const fields = {
+      u: USER_ID,
+      id: LIST_ID,
+      f_id: FORM_ID,
+      EMAIL: email,
+      // Use the hidden tags field from your form (tag ID 248403)
+      'tags': '248403',
+      // Add quiz data as merge fields (MailChimp custom fields)
+      'MERGE1': quizData?.score?.toString() || '', // Quiz Score
+      'MERGE2': quizData?.tier || '', // Quiz Tier
+      'MERGE3': quizData?.accuracy?.toString() || '', // Quiz Accuracy
+      'MERGE4': new Date().toISOString().split('T')[0], // Quiz Date
+      [`b_${USER_ID}_${LIST_ID}`]: '', // Bot field (must be empty)
     };
 
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'Authorization': `Basic ${btoa(`anystring:${API_KEY}`)}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(subscriberData),
+    Object.entries(fields).forEach(([key, value]) => {
+      const input = document.createElement('input');
+      input.type = 'hidden';
+      input.name = key;
+      input.value = value;
+      form.appendChild(input);
     });
 
-    if (response.ok) {
-      return true;
-    } else {
-      await response.json(); // Read response to avoid memory leaks
-      return false;
-    }
-  } catch {
+    // Add to DOM and submit
+    document.body.appendChild(iframe);
+    document.body.appendChild(form);
+
+    return new Promise((resolve) => {
+      iframe.onload = () => {
+        console.log('✅ MailChimp form submitted successfully');
+        // Clean up
+        document.body.removeChild(iframe);
+        document.body.removeChild(form);
+        resolve(true);
+      };
+
+      iframe.onerror = () => {
+        console.error('❌ MailChimp form submission failed');
+        document.body.removeChild(iframe);
+        document.body.removeChild(form);
+        resolve(false);
+      };
+
+      // Submit the form
+      form.submit();
+    });
+
+  } catch (error) {
+    console.error('MailChimp subscription error:', error);
     return false;
   }
 };
