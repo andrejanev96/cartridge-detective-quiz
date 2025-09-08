@@ -35,13 +35,18 @@ export const subscribeToMailChimp = async (
     return true;
   }
 
+  // Only subscribe users who checked the newsletter checkbox
+  if (!subscribeToBulletin) {
+    return true; // Skip MailChimp entirely if user doesn't want newsletter
+  }
+
   try {
     const url = `https://${SERVER_PREFIX}.api.mailchimp.com/3.0/lists/${LIST_ID}/members`;
     
     const subscriberData: MailChimpSubscriber = {
       email_address: email,
-      status: subscribeToBulletin ? 'subscribed' : 'unsubscribed',
-      tags: ['cartridge-quiz'],
+      status: 'subscribed', // Only subscribed users reach this point
+      tags: ['Cartridge Quiz Contact'],
       merge_fields: {
         QUIZ_SCORE: quizData?.score,
         QUIZ_TIER: quizData?.tier,

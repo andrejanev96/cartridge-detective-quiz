@@ -184,14 +184,20 @@ export const useQuizStore = create<QuizStore>((set, get) => ({
     });
 
     try {
-      // Subscribe to MailChimp
-      await subscribeToMailChimp(email, subscribeToBulletin, {
-        score: state.score,
-        tier: tier.name,
-        accuracy,
-      });
+      // Handle MailChimp subscription (only if user opted in)
+      if (subscribeToBulletin) {
+        await subscribeToMailChimp(email, subscribeToBulletin, {
+          score: state.score,
+          tier: tier.name,
+          accuracy,
+        });
+      }
+    } catch (error) {
+      // Continue even if MailChimp subscription fails
+    }
 
-      // Send detailed quiz results email
+    try {
+      // Always send detailed quiz results email to all users
       await sendQuizResultsEmail(email, {
         score: state.score,
         totalQuestions: state.quizData.length,
@@ -199,9 +205,8 @@ export const useQuizStore = create<QuizStore>((set, get) => ({
         userAnswers: state.userAnswers,
         accuracy,
       });
-
     } catch (error) {
-      // Continue to results even if email fails
+      // Continue to results even if email sending fails
     }
     
     set({ currentSection: 'results' });
