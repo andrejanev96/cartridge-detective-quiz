@@ -505,6 +505,11 @@ body {
     min-height: calc(100vh - 160px);
   }
 
+  .question-answers-area {
+    flex: none; /* Remove flex expansion on mobile */
+    min-height: auto; /* Let content determine height */
+  }
+
   .slider-preset-btn {
     padding: 8px 14px;
     font-size: 13px;
