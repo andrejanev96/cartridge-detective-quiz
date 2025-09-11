@@ -314,28 +314,6 @@ body {
   color: #888a8c;
 }
 
-/* Loading State */
-.loading-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-height: 50vh;
-  text-align: center;
-}
-
-.loading-badge {
-  font-size: 4rem;
-  margin-bottom: 20px;
-  filter: drop-shadow(0 0 20px rgba(191, 148, 0, 0.6));
-}
-
-.loading-container p {
-  color: #bf9400;
-  font-size: 1.2rem;
-  font-weight: 500;
-  margin: 0;
-}
 
 /* Quiz Content */
 .quiz-content {
