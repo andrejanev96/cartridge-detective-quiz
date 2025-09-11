@@ -278,7 +278,7 @@ export const Results: React.FC = () => {
                   border: '1px solid rgba(191, 148, 0, 0.2)'
                 }}>
                   <div style={{ fontSize: '12px', color: '#bf9400', marginBottom: '5px' }}>
-                    ⭐ Join 1,200+ cartridge detectives who unlocked their full profile
+                    ⭐ Join the cartridge detective community and unlock your full profile
                   </div>
                 </div>
 
