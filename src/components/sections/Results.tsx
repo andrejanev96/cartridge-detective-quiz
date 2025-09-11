@@ -126,7 +126,25 @@ export const Results: React.FC = () => {
                 placeholder="Enter your email address"
                 {...register('email', {
                   required: 'Email is required',
-                  pattern: { value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, message: 'Please enter a valid email address' },
+                  validate: {
+                    validFormat: (value: string) => {
+                      // RFC 5322 compliant email regex (simplified but robust)
+                      const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
+                      return emailRegex.test(value) || 'Please enter a valid email address';
+                    },
+                    validLength: (value: string) => {
+                      return value.length <= 254 || 'Email address is too long';
+                    },
+                    validDomain: (value: string) => {
+                      const domain = value.split('@')[1];
+                      return (domain && domain.length >= 3 && domain.includes('.')) || 'Please enter a valid email domain';
+                    },
+                    noDisposable: (value: string) => {
+                      const disposableDomains = ['10minutemail.com', 'tempmail.org', 'guerrillamail.com', 'mailinator.com', '0-mail.com'];
+                      const domain = value.split('@')[1]?.toLowerCase();
+                      return !disposableDomains.includes(domain) || 'Please use a permanent email address';
+                    }
+                  }
                 })}
                 style={errors.email ? { borderColor: '#dc3545' } : {}}
               />
