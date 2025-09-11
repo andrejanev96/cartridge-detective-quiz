@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Question } from '@/types/quiz';
 import { MultipleChoice } from './QuestionTypes/MultipleChoice';
@@ -13,7 +13,6 @@ interface QuestionRendererProps {
 
 export const QuestionRenderer: React.FC<QuestionRendererProps> = ({ question }) => {
   const { currentQuestion, quizData } = useQuizStore();
-  const containerRef = useRef<HTMLDivElement>(null);
   const [isCompactMode, setIsCompactMode] = useState(false);
 
   // Preload next question image for better UX
@@ -85,29 +84,32 @@ export const QuestionRenderer: React.FC<QuestionRendererProps> = ({ question }) 
   };
 
   return (
-    <>
-      <div 
-        ref={containerRef}
-        className={`question-container ${isCompactMode ? 'compact-mode' : ''}`}
-      >
-        {question.question && <h2 className="question-text">{question.question}</h2>}
-        {question.image && (
-          <div className="question-image">
-            <motion.img 
-              src={question.image} 
-              alt="Cartridge identification"
-              loading="lazy"
-              decoding="async"
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.3, ease: 'easeOut' }}
-            />
-          </div>
-        )}
+    <div className={`quiz-content-wrapper ${isCompactMode ? 'compact-mode' : ''}`}>
+      <div className="question-content-area">
+        <div className="question-header-area">
+          {question.question && <h2 className="question-text">{question.question}</h2>}
+        </div>
+        
+        <div className="question-image-area">
+          {question.image && (
+            <div className="question-image">
+              <motion.img 
+                src={question.image} 
+                alt="Cartridge identification"
+                loading="lazy"
+                decoding="async"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3, ease: 'easeOut' }}
+              />
+            </div>
+          )}
+        </div>
+        
+        <div className="question-answers-area">
+          {renderQuestionType()}
+        </div>
       </div>
-      <div className={isCompactMode ? 'compact-mode' : ''}>
-        {renderQuestionType()}
-      </div>
-    </>
+    </div>
   );
 };
