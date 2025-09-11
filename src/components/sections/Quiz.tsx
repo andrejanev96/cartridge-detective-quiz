@@ -164,11 +164,8 @@ export const Quiz: React.FC = () => {
             )}
           </div>
           <div className="progress-bar-container">
-            <motion.div 
+            <div 
               className="progress-bar"
-              initial={{ '--progress': '0%' }}
-              animate={{ '--progress': `${((currentQuestion + 1) / quizData.length) * 100}%` }}
-              transition={{ duration: 0.8, ease: "easeOut" }}
               style={{ '--progress': `${((currentQuestion + 1) / quizData.length) * 100}%` } as React.CSSProperties}
             />
           </div>
