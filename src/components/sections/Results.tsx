@@ -386,16 +386,16 @@ export const Results: React.FC = () => {
                 textAlign: 'center'
               }}>
                 <div style={{ fontSize: '24px', marginBottom: '8px' }}>
-                  {accuracy >= 80 ? '🎖️' : accuracy >= 60 ? '🎯' : '📚'}
+                  {accuracy >= 80 ? '🎖️' : accuracy >= 47 ? '🎯' : '📚'}
                 </div>
                 <h5 style={{ color: '#bf9400', marginBottom: '8px', fontSize: '16px' }}>
-                  {accuracy >= 80 ? 'Marksman Status' : accuracy >= 60 ? 'Good Shooting' : 'Training Mode'}
+                  {accuracy >= 80 ? 'Marksman Status' : accuracy >= 47 ? 'Good Shooting' : 'Training Mode'}
                 </h5>
                 <p style={{ color: '#fff', fontSize: '14px', margin: '0' }}>
                   {accuracy >= 80 
                     ? "Outstanding accuracy! You've got a keen eye for cartridge identification."
-                    : accuracy >= 60 
-                    ? "Solid performance! A few more range sessions and you'll be expert-level."
+                    : accuracy >= 47 
+                    ? "Solid performance! Your detective skills are developing well."
                     : "Every expert was once a beginner. Time to hit the books and try again!"
                   }
                 </p>
