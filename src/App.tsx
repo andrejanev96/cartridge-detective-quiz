@@ -2,17 +2,20 @@ import { useEffect } from 'react';
 import { AnimatePresence } from 'framer-motion';
 import { Landing } from '@/components/sections/Landing';
 import { Quiz } from '@/components/sections/Quiz';
-import { EmailCapture } from '@/components/sections/EmailCapture';
 import { Results } from '@/components/sections/Results';
 import { useQuizStore } from '@/stores/quizStore';
+import { trackEvent } from '@/utils/analytics';
 
 function App() {
-  const { currentSection, trackEvent } = useQuizStore();
+  const { currentSection } = useQuizStore();
 
   useEffect(() => {
-    // Initialize the quiz on page load
-    trackEvent('quiz_page_loaded');
-  }, [trackEvent]);
+    // Track page view on load
+    trackEvent('page_view', {
+      content_type: 'quiz',
+      content_id: 'cartridge_detective_challenge',
+    });
+  }, []);
 
   const renderCurrentSection = () => {
     switch (currentSection) {
@@ -20,8 +23,6 @@ function App() {
         return <Landing />;
       case 'quiz':
         return <Quiz />;
-      case 'emailCapture':
-        return <EmailCapture />;
       case 'results':
         return <Results />;
       default:

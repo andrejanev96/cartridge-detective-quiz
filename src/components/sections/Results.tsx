@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Logo } from '@/components/ui/Logo';
 import { Button } from '@/components/ui/Button';
 import { useQuizStore } from '@/stores/quizStore';
 import { trackQuizEvents } from '@/utils/analytics';
+import { useForm } from 'react-hook-form';
+import { EmailFormData } from '@/types/quiz';
 
 export const Results: React.FC = () => {
   const {
@@ -13,11 +15,48 @@ export const Results: React.FC = () => {
     getTier,
     getAchievements,
     retakeQuiz,
+    resultsUnlocked,
   } = useQuizStore();
 
   const tier = getTier(score);
   const achievements = getAchievements();
   const accuracy = Math.round((score / quizData.length) * 100);
+  const [displayScore, setDisplayScore] = useState(0);
+
+  // Animate score count-up when results unlock
+  useEffect(() => {
+    if (!resultsUnlocked) return;
+    let raf = 0;
+    const duration = 800; // ms
+    const start = performance.now();
+    const tick = (now: number) => {
+      const p = Math.min(1, (now - start) / duration);
+      const eased = 1 - Math.pow(1 - p, 3); // easeOutCubic
+      setDisplayScore(Math.round(eased * score));
+      if (p < 1) raf = requestAnimationFrame(tick);
+    };
+    setDisplayScore(0);
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [resultsUnlocked, score]);
+
+  // Email gating
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { register, handleSubmit, formState: { errors, isValid }, setFocus } = useForm<EmailFormData>({
+    defaultValues: { subscribeToBulletin: true },
+  });
+  const [showSneakPeek, setShowSneakPeek] = useState(false);
+
+  useEffect(() => { setFocus('email'); }, [setFocus]);
+
+  const onSubmit = async (data: EmailFormData) => {
+    setIsSubmitting(true);
+    try {
+      await useQuizStore.getState().unlockResults(data.email, data.subscribeToBulletin);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   const shareX = () => {
     trackQuizEvents.socialShare('x', score, tier.name);
@@ -45,23 +84,196 @@ export const Results: React.FC = () => {
     );
   };
 
-  const shareInstagram = () => {
-    trackQuizEvents.socialShare('instagram', score, tier.name);
-    // Instagram doesn't support direct URL sharing, so we'll copy the text to clipboard
-    const text = `I just scored ${score}/${quizData.length} on the Cartridge Detective Challenge! 🎯 Check it out: ${window.location.href}`;
-    navigator.clipboard.writeText(text).then(() => {
-      alert('Results copied to clipboard! You can paste this on Instagram.');
-    }).catch(() => {
-      // Fallback for older browsers
-      const textArea = document.createElement('textarea');
-      textArea.value = text;
-      document.body.appendChild(textArea);
-      textArea.select();
-      document.execCommand('copy');
-      document.body.removeChild(textArea);
-      alert('Results copied to clipboard! You can paste this on Instagram.');
-    });
-  };
+
+  if (!resultsUnlocked) {
+    return (
+      <motion.section 
+        className="section active"
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+      >
+        <div className="container">
+          <div className="email-content">
+            <Logo />
+
+            <motion.h2
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+            >
+              Unlock Your Results
+            </motion.h2>
+
+            <motion.p 
+              className="email-subtitle"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4 }}
+            >
+              Enter your email to view your Cartridge Knowledge Profile. You can opt-in for the Ammo.com BULLETin, too.
+            </motion.p>
+
+            <motion.form 
+              className="email-form"
+              onSubmit={handleSubmit(onSubmit)}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.6 }}
+            >
+              <input
+                type="email"
+                placeholder="Enter your email address"
+                {...register('email', {
+                  required: 'Email is required',
+                  pattern: { value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, message: 'Please enter a valid email address' },
+                })}
+                style={errors.email ? { borderColor: '#dc3545' } : {}}
+              />
+              <Button type="submit" disabled={!isValid || isSubmitting}>
+                {isSubmitting ? 'Processing...' : 'Unlock Results'}
+              </Button>
+            </motion.form>
+
+            {errors.email && (
+              <motion.p 
+                style={{ color: '#dc3545', fontSize: '14px', marginTop: '10px' }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+              >
+                {errors.email.message}
+              </motion.p>
+            )}
+
+            <motion.div 
+              className="bulletin-option-single"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.8 }}
+            >
+              <div className="bullet-option">
+                <div className="bullet-shell">
+                  <div className="bullet-tip"></div>
+                </div>
+                <label>
+                  <input type="checkbox" {...register('subscribeToBulletin')} defaultChecked />
+                  <span>🎯 Get the Ammo.com BULLETin for weekly ammo discounts and insights</span>
+                </label>
+              </div>
+            </motion.div>
+
+            {/* Sneak peek option */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 1.0 }}
+              style={{ marginTop: '10px' }}
+            >
+              <Button variant="secondary" onClick={() => setShowSneakPeek(true)}>
+                See a quick summary
+              </Button>
+            </motion.div>
+
+            {showSneakPeek && (
+              <motion.div
+                className="results-breakdown"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3 }}
+                style={{ marginTop: '20px' }}
+              >
+                <h4>Quick Summary</h4>
+                <div className="breakdown-item">
+                  <span>Cartridges Identified:</span>
+                  <span>{score} / {quizData.length}</span>
+                </div>
+                <div className="breakdown-item">
+                  <span>Accuracy Rate:</span>
+                  <span>{accuracy}%</span>
+                </div>
+
+                {/* Blurred Detective Rank Preview */}
+                <div className="breakdown-item" style={{ position: 'relative' }}>
+                  <span>Detective Rank:</span>
+                  <span style={{ 
+                    filter: 'blur(4px)', 
+                    userSelect: 'none',
+                    color: '#bf9400',
+                    fontWeight: 'bold'
+                  }}>
+                    {tier.name}
+                  </span>
+                  <div style={{
+                    position: 'absolute',
+                    right: '10px',
+                    top: '50%',
+                    transform: 'translateY(-50%)',
+                    fontSize: '12px',
+                    color: '#bf9400'
+                  }}>🔒</div>
+                </div>
+
+                {/* Hidden Badges Preview */}
+                <div style={{ margin: '15px 0', textAlign: 'center' }}>
+                  <div style={{ marginBottom: '8px', color: '#bf9400', fontSize: '14px', fontWeight: 'bold' }}>
+                    🎯 You earned {achievements.length} badge{achievements.length !== 1 ? 's' : ''}
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'center', gap: '8px', flexWrap: 'wrap' }}>
+                    {achievements.slice(0, 3).map((_, index) => (
+                      <div 
+                        key={index}
+                        style={{
+                          background: 'rgba(191, 148, 0, 0.1)',
+                          border: '1px solid rgba(191, 148, 0, 0.3)',
+                          borderRadius: '20px',
+                          padding: '5px 12px',
+                          fontSize: '12px',
+                          filter: 'blur(3px)',
+                          userSelect: 'none'
+                        }}
+                      >
+                        🏆 ██████████
+                      </div>
+                    ))}
+                    {achievements.length > 3 && (
+                      <div style={{
+                        background: 'rgba(191, 148, 0, 0.1)',
+                        border: '1px solid rgba(191, 148, 0, 0.3)',
+                        borderRadius: '20px',
+                        padding: '5px 12px',
+                        fontSize: '12px',
+                        color: '#bf9400'
+                      }}>
+                        +{achievements.length - 3} more
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* Social Proof */}
+                <div style={{ 
+                  textAlign: 'center', 
+                  margin: '15px 0',
+                  padding: '10px',
+                  background: 'rgba(191, 148, 0, 0.05)',
+                  borderRadius: '8px',
+                  border: '1px solid rgba(191, 148, 0, 0.2)'
+                }}>
+                  <div style={{ fontSize: '12px', color: '#bf9400', marginBottom: '5px' }}>
+                    ⭐ Join 1,200+ cartridge detectives who unlocked their full profile
+                  </div>
+                </div>
+
+                <p style={{ marginTop: '15px', color: '#888a8c', textAlign: 'center', fontSize: '13px' }}>
+                  Enter your email above to unlock your detective rank, achievements, and question-by-question breakdown.
+                </p>
+              </motion.div>
+            )}
+          </div>
+        </div>
+      </motion.section>
+    );
+  }
 
   return (
     <motion.section 
@@ -89,7 +301,7 @@ export const Results: React.FC = () => {
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.4, duration: 0.5 }}
             >
-              <span className="score-number">{score}</span>
+              <span className="score-number">{displayScore}</span>
               <span className="score-separator"> / </span>
               <span className="score-total">{quizData.length}</span>
             </motion.div>
@@ -146,25 +358,103 @@ export const Results: React.FC = () => {
             </motion.div>
           )}
 
+          {/* Shooter's Intelligence Report */}
           <motion.div 
-            className="email-sent-notice"
-            style={{
-              background: '#1d1d1d',
-              border: '2px solid #28a745',
-              borderRadius: '8px',
-              padding: '20px',
-              margin: '30px 0',
-              textAlign: 'center'
-            }}
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
+            className="intelligence-report"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 1.2 }}
+            style={{ marginTop: '30px' }}
           >
-            <h4 style={{ color: '#28a745', marginBottom: '10px' }}>📧 Results Sent!</h4>
-            <p style={{ color: '#cccccc' }}>
-              Check your email for detailed explanations, historical context, 
-              and your complete Cartridge Knowledge Profile.
-            </p>
+            <h4 style={{ color: '#bf9400', marginBottom: '20px', textAlign: 'center' }}>
+              🎯 Your Ballistics Intelligence Report
+            </h4>
+            
+            {/* Performance Insights */}
+            <div style={{ 
+              display: 'grid', 
+              gridTemplateColumns: window.innerWidth > 768 ? 'repeat(auto-fit, minmax(300px, 1fr))' : '1fr',
+              gap: '15px',
+              marginBottom: '20px'
+            }}>
+              {/* Accuracy Assessment */}
+              <div style={{
+                background: '#1d1d1d',
+                border: '2px solid #bf9400',
+                borderRadius: '12px',
+                padding: '20px',
+                textAlign: 'center'
+              }}>
+                <div style={{ fontSize: '24px', marginBottom: '8px' }}>
+                  {accuracy >= 80 ? '🎖️' : accuracy >= 60 ? '🎯' : '📚'}
+                </div>
+                <h5 style={{ color: '#bf9400', marginBottom: '8px', fontSize: '16px' }}>
+                  {accuracy >= 80 ? 'Marksman Status' : accuracy >= 60 ? 'Good Shooting' : 'Training Mode'}
+                </h5>
+                <p style={{ color: '#fff', fontSize: '14px', margin: '0' }}>
+                  {accuracy >= 80 
+                    ? "Outstanding accuracy! You've got a keen eye for cartridge identification."
+                    : accuracy >= 60 
+                    ? "Solid performance! A few more range sessions and you'll be expert-level."
+                    : "Every expert was once a beginner. Time to hit the books and try again!"
+                  }
+                </p>
+              </div>
+
+              {/* Comparative Stats */}
+              <div style={{
+                background: '#1d1d1d',
+                border: '2px solid #bf9400',
+                borderRadius: '12px',
+                padding: '20px',
+                textAlign: 'center'
+              }}>
+                <div style={{ fontSize: '24px', marginBottom: '8px' }}>📊</div>
+                <h5 style={{ color: '#bf9400', marginBottom: '8px', fontSize: '16px' }}>
+                  Compared to Other Shooters
+                </h5>
+                <p style={{ color: '#fff', fontSize: '14px', margin: '0' }}>
+                  {accuracy >= 90 
+                    ? "Top 10% - You're in the elite tier of cartridge detectives!"
+                    : accuracy >= 75 
+                    ? "Top 25% - Above average marksmanship in identification!"
+                    : accuracy >= 50
+                    ? "Middle of the pack - Room to improve your ballistics knowledge!"
+                    : "Early stage shooter - Perfect time to build your expertise!"
+                  }
+                </p>
+              </div>
+
+              {/* Learning Recommendations */}
+              <div style={{
+                background: '#1d1d1d',
+                border: '2px solid #bf9400',
+                borderRadius: '12px',
+                padding: '20px',
+                textAlign: 'center',
+                ...(window.innerWidth > 768 ? { gridColumn: '1 / -1' } : {})
+              }}>
+                <div style={{ fontSize: '24px', marginBottom: '8px' }}>🎓</div>
+                <h5 style={{ color: '#bf9400', marginBottom: '8px', fontSize: '16px' }}>
+                  Intel for Your Next Mission
+                </h5>
+                <p style={{ color: '#fff', fontSize: '14px', margin: '0' }}>
+                  {score >= 12 
+                    ? "You're dialed in! Try challenging yourself with different cartridge families or historical rounds."
+                    : score >= 8 
+                    ? "Focus fire on military surplus rounds and common hunting cartridges. That's where the points are!"
+                    : score >= 4
+                    ? "Start with the fundamentals: rimfire vs. centerfire, and basic caliber recognition. Build that foundation!"
+                    : "Time for basic training! Study up on common cartridge types and their key identifying features."
+                  }
+                  {maxStreak >= 5 ? " Your streak game is strong - maintain that momentum!" : " Work on consistency to build longer identification streaks."}
+                </p>
+              </div>
+            </div>
+            
+            <div style={{ textAlign: 'center', fontSize: '13px', color: '#888', fontStyle: 'italic' }}>
+              Ready for another mission? Your knowledge stays sharp with practice!
+            </div>
           </motion.div>
 
           <motion.div 
@@ -190,11 +480,6 @@ export const Results: React.FC = () => {
                   <path d="M12 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0zm5.01 4.744c.688 0 1.25.561 1.25 1.249a1.25 1.25 0 0 1-2.498.056l-2.597-.547-.8 3.747c1.824.07 3.48.632 4.674 1.488.308-.309.73-.491 1.207-.491.968 0 1.754.786 1.754 1.754 0 .716-.435 1.333-1.01 1.614a3.111 3.111 0 0 1 .042.52c0 2.694-3.13 4.87-7.004 4.87-3.874 0-7.004-2.176-7.004-4.87 0-.183.015-.366.043-.534A1.748 1.748 0 0 1 4.028 12c0-.968.786-1.754 1.754-1.754.463 0 .898.196 1.207.49 1.207-.883 2.878-1.43 4.744-1.487l.885-4.182a.342.342 0 0 1 .14-.197.35.35 0 0 1 .238-.042l2.906.617a1.214 1.214 0 0 1 1.108-.701zM9.25 12C8.561 12 8 12.562 8 13.25c0 .687.561 1.248 1.25 1.248.687 0 1.248-.561 1.248-1.249 0-.688-.561-1.249-1.249-1.249zm5.5 0c-.687 0-1.248.561-1.248 1.25 0 .687.561 1.248 1.249 1.248.688 0 1.249-.561 1.249-1.249 0-.687-.562-1.249-1.25-1.249zm-5.466 3.99a.327.327 0 0 0-.231.094.33.33 0 0 0 0 .463c.842.842 2.484.913 2.961.913.477 0 2.105-.056 2.961-.913a.361.361 0 0 0 .029-.463.33.33 0 0 0-.464 0c-.547.533-1.684.73-2.512.73-.828 0-1.979-.196-2.512-.73a.326.326 0 0 0-.232-.095z"/>
                 </svg>
               </Button>
-              <Button variant="social" onClick={shareInstagram}>
-                <svg style={{ width: '16px', height: '16px', fill: 'currentColor' }} viewBox="0 0 24 24">
-                  <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
-                </svg>
-              </Button>
             </div>
           </motion.div>
 
@@ -212,3 +497,4 @@ export const Results: React.FC = () => {
     </motion.section>
   );
 };
+

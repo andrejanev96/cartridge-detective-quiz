@@ -1,6 +1,6 @@
 import { create } from 'zustand';
-import { Question, UserAnswer, QuizState, Tier } from '@/types/quiz';
-import { subscribeToMailChimp, sendQuizResultsEmail } from '@/utils/mailchimp';
+import { Question, UserAnswer, QuizState, Tier, MultipleChoiceQuestion, TrueFalseQuestion, TextInputQuestion, SliderQuestion, DragDropQuestion } from '@/types/quiz';
+import { subscribeToMailChimp } from '@/utils/mailchimp';
 import { trackQuizEvents } from '@/utils/analytics';
 import questionsData from '@/data/cartridge-questions.json';
 
@@ -37,20 +37,30 @@ const tiers: Tier[] = [
   },
 ];
 
+type QuestionsFile = {
+  settings: {
+    questionsPerQuiz: number;
+    questionsPerDifficulty: Record<'easy' | 'medium' | 'hard', number>;
+  };
+  easy: Array<Omit<Question, 'id' | 'difficulty'>>;
+  medium: Array<Omit<Question, 'id' | 'difficulty'>>;
+  hard: Array<Omit<Question, 'id' | 'difficulty'>>;
+};
+
 interface QuizStore extends QuizState {
   // Actions
   startQuiz: () => void;
   loadQuestions: () => Promise<void>;
-  generateQuiz: (allQuestions: any) => void;
-  selectAnswer: (answer: any) => void;
+  generateQuiz: (allQuestions: QuestionsFile) => void;
+  selectAnswer: (answer: QuizState['selectedAnswer']) => void;
   nextQuestion: () => void;
-  submitEmail: (email: string, subscribeToBulletin: boolean) => void;
+  unlockResults: (email: string, subscribeToBulletin: boolean) => void;
   showSection: (section: QuizState['currentSection']) => void;
   retakeQuiz: () => void;
   resetQuestionState: () => void;
   getTier: (score: number) => Tier;
   getAchievements: () => Array<{ icon: string; text: string }>;
-  trackEvent: (eventName: string, data?: Record<string, any>) => void;
+  trackEvent: () => void;
 }
 
 export const useQuizStore = create<QuizStore>((set, get) => ({
@@ -64,6 +74,8 @@ export const useQuizStore = create<QuizStore>((set, get) => ({
   quizData: [],
   isQuizActive: false,
   currentSection: 'landing',
+  resultsUnlocked: false,
+  userEmail: undefined,
 
   // Actions
   startQuiz: async () => {
@@ -73,7 +85,7 @@ export const useQuizStore = create<QuizStore>((set, get) => ({
   },
 
   loadQuestions: async () => {
-    get().generateQuiz(questionsData);
+    get().generateQuiz(questionsData as unknown as QuestionsFile);
   },
 
   generateQuiz: (allQuestions) => {
@@ -81,18 +93,20 @@ export const useQuizStore = create<QuizStore>((set, get) => ({
     const quizData: Question[] = [];
 
     // Add questions from each difficulty level
-    ['easy', 'medium', 'hard'].forEach((difficulty) => {
+    (['easy', 'medium', 'hard'] as const).forEach((difficulty) => {
       const questionsNeeded = settings.questionsPerDifficulty[difficulty];
-      const availableQuestions = [...allQuestions[difficulty]];
+      const diff = difficulty;
+      const availableQuestions = [...allQuestions[diff]] as Array<Omit<Question, 'id' | 'difficulty'>>;
 
       for (let i = 0; i < questionsNeeded && availableQuestions.length > 0; i++) {
         const randomIndex = Math.floor(Math.random() * availableQuestions.length);
         const selectedQuestion = availableQuestions.splice(randomIndex, 1)[0];
-        quizData.push({
-          ...selectedQuestion,
+        const completedQuestion = {
+          ...(selectedQuestion as Record<string, unknown>),
           id: `${difficulty}-${i}`,
-          difficulty: difficulty as 'easy' | 'medium' | 'hard'
-        });
+          difficulty: difficulty as 'easy' | 'medium' | 'hard',
+        } as unknown as Question;
+        quizData.push(completedQuestion);
       }
     });
 
@@ -116,26 +130,52 @@ export const useQuizStore = create<QuizStore>((set, get) => ({
     switch (question.type) {
       case 'multiple-choice':
       case 'image-multiple-choice':
-        isCorrect = state.selectedAnswer === (question as any).correct;
-        userAnswer = (question as any).answers[state.selectedAnswer];
+        {
+          const q = question as MultipleChoiceQuestion;
+          const idx = state.selectedAnswer as number;
+          isCorrect = idx === q.correct;
+          userAnswer = typeof idx === 'number' ? q.answers[idx] : null;
+        }
         break;
       case 'true-false':
-        isCorrect = state.selectedAnswer === (question as any).correct;
+        {
+          const q = question as TrueFalseQuestion;
+          isCorrect = state.selectedAnswer === q.correct;
+        }
         break;
-      case 'text-input':
-        isCorrect = (question as any).acceptableAnswers.some(
-          (acceptable: string) => 
-            acceptable.toLowerCase() === String(state.selectedAnswer).toLowerCase()
-        );
+      case 'text-input': {
+        const q = question as TextInputQuestion;
+        const user = String(state.selectedAnswer ?? '').trim().toLowerCase();
+        isCorrect =
+          user.length > 0 &&
+          q.acceptableAnswers.some(
+            (acceptable: string) => acceptable.trim().toLowerCase() === user
+          );
         break;
+      }
       case 'slider':
-        isCorrect = Math.abs(state.selectedAnswer - (question as any).correct) <= (question as any).tolerance;
-        userAnswer = `${state.selectedAnswer} ${(question as any).unit}`;
-        break;
+        {
+          const q = question as SliderQuestion;
+          const selected = Number(state.selectedAnswer);
+          const correct = Number(q.correct);
+          const tolerance = Number(q.tolerance ?? 0);
+          if (q.presetOnly) {
+            // In preset-only mode, require exact match
+            isCorrect = selected === correct;
+          } else {
+            isCorrect = Math.abs(selected - correct) <= tolerance;
+          }
+          userAnswer = `${state.selectedAnswer} ${q.unit}`;
+          break;
+        }
       case 'drag-drop':
-        isCorrect = Object.keys((question as any).correctMatches).every(
-          (itemId) => state.selectedAnswer[itemId] === (question as any).correctMatches[itemId]
-        );
+        {
+          const q = question as DragDropQuestion;
+          const ans = (state.selectedAnswer || {}) as Record<string, string>;
+          isCorrect = Object.keys(q.correctMatches).every(
+            (itemId) => ans[itemId] === q.correctMatches[itemId]
+          );
+        }
         break;
     }
 
@@ -167,11 +207,11 @@ export const useQuizStore = create<QuizStore>((set, get) => ({
       set({ currentQuestion: state.currentQuestion + 1 });
       get().resetQuestionState();
     } else {
-      set({ currentSection: 'emailCapture', isQuizActive: false });
+      set({ currentSection: 'results', isQuizActive: false });
     }
   },
 
-  submitEmail: async (email: string, subscribeToBulletin: boolean) => {
+  unlockResults: async (email: string, subscribeToBulletin: boolean) => {
     const state = get();
     const tier = get().getTier(state.score);
     const accuracy = Math.round((state.score / state.quizData.length) * 100);
@@ -189,30 +229,17 @@ export const useQuizStore = create<QuizStore>((set, get) => ({
     try {
       // Handle MailChimp subscription (only if user opted in)
       if (subscribeToBulletin) {
-        await subscribeToMailChimp(email, subscribeToBulletin, {
-          score: state.score,
-          tier: tier.name,
-          accuracy,
-        });
+        await subscribeToMailChimp(email, subscribeToBulletin);
       }
-    } catch (error) {
-      // Continue even if MailChimp subscription fails
+    } catch {
+      // Non-blocking
     }
 
-    try {
-      // Always send detailed quiz results email to all users
-      await sendQuizResultsEmail(email, {
-        score: state.score,
-        totalQuestions: state.quizData.length,
-        tier,
-        userAnswers: state.userAnswers,
-        accuracy,
-      });
-    } catch (error) {
-      // Continue to results even if email sending fails
-    }
-    
-    set({ currentSection: 'results' });
+    set({ 
+      currentSection: 'results',
+      resultsUnlocked: true,
+      userEmail: email,
+    });
   },
 
   showSection: (section) => {
@@ -230,6 +257,8 @@ export const useQuizStore = create<QuizStore>((set, get) => ({
       userAnswers: [],
       currentSection: 'landing',
       isQuizActive: false,
+      resultsUnlocked: false,
+      userEmail: undefined,
     });
     get().resetQuestionState();
   },
@@ -267,7 +296,7 @@ export const useQuizStore = create<QuizStore>((set, get) => ({
     return achievements;
   },
 
-  trackEvent: (_eventName: string, _data?: Record<string, any>) => {
+  trackEvent: () => {
     // Legacy method - now handled by analytics utils
   },
 }));

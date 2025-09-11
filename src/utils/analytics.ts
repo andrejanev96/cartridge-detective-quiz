@@ -2,8 +2,8 @@
 
 declare global {
   interface Window {
-    gtag: (...args: any[]) => void;
-    dataLayer: any[];
+    gtag: (...args: unknown[]) => void;
+    dataLayer: unknown[];
   }
 }
 
@@ -16,15 +16,15 @@ export const initializeGA4 = (measurementId: string) => {
 
   // Initialize dataLayer and gtag
   window.dataLayer = window.dataLayer || [];
-  window.gtag = function() {
-    window.dataLayer.push(arguments);
+  window.gtag = (...args: unknown[]) => {
+    window.dataLayer.push(args);
   };
 
   window.gtag('js', new Date());
   window.gtag('config', measurementId);
 };
 
-export const trackEvent = (eventName: string, parameters?: Record<string, any>) => {
+export const trackEvent = (eventName: string, parameters?: Record<string, unknown>) => {
   if (typeof window.gtag !== 'undefined') {
     window.gtag('event', eventName, parameters);
   }

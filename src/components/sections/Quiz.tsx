@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/Button';
 import { QuestionRenderer } from '@/components/quiz/QuestionRenderer';
 import { useQuizStore } from '@/stores/quizStore';
+import { MultipleChoiceQuestion, SliderQuestion } from '@/types/quiz';
 
 export const Quiz: React.FC = () => {
   const {
@@ -19,7 +20,7 @@ export const Quiz: React.FC = () => {
   const currentQ = quizData[currentQuestion];
   const isNextDisabled = selectedAnswer === null || selectedAnswer === '';
 
-  const handleNextQuestion = async () => {
+  const handleNextQuestion = useCallback(async () => {
     if (isNextDisabled) return;
     
     setIsTransitioning(true);
@@ -31,7 +32,7 @@ export const Quiz: React.FC = () => {
       setShowBullet(false);
       setIsTransitioning(false);
     }, 600);
-  };
+  }, [isNextDisabled, nextQuestion]);
 
   useEffect(() => {
     resetQuestionState();
@@ -41,17 +42,18 @@ export const Quiz: React.FC = () => {
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       // Number keys for multiple choice
-      if (e.key >= '1' && e.key <= '4' && currentQ?.type === 'multiple-choice') {
+      if (e.key >= '1' && e.key <= '4' && (currentQ?.type === 'multiple-choice' || currentQ?.type === 'image-multiple-choice')) {
         const answerIndex = parseInt(e.key) - 1;
-        if (answerIndex < (currentQ as any).answers.length) {
+        const answers = (currentQ as MultipleChoiceQuestion).answers;
+        if (answerIndex < answers.length) {
           useQuizStore.getState().selectAnswer(answerIndex);
         }
       }
       
       // Arrow keys for multiple choice navigation
-      if ((e.key === 'ArrowUp' || e.key === 'ArrowDown') && currentQ?.type === 'multiple-choice') {
-        const answers = (currentQ as any).answers;
-        const currentIndex = selectedAnswer !== null ? selectedAnswer : -1;
+      if ((e.key === 'ArrowUp' || e.key === 'ArrowDown') && (currentQ?.type === 'multiple-choice' || currentQ?.type === 'image-multiple-choice')) {
+        const answers = (currentQ as MultipleChoiceQuestion).answers;
+        const currentIndex = typeof selectedAnswer === 'number' ? selectedAnswer : -1;
         let newIndex;
         
         if (e.key === 'ArrowDown') {
@@ -65,8 +67,12 @@ export const Quiz: React.FC = () => {
       
       // Arrow keys for slider controls
       if ((e.key === 'ArrowLeft' || e.key === 'ArrowRight') && currentQ?.type === 'slider') {
-        const sliderQuestion = currentQ as any;
-        const currentValue = selectedAnswer || (sliderQuestion.presetOnly ? sliderQuestion.presetValues[0] : sliderQuestion.min);
+        const sliderQuestion = currentQ as SliderQuestion;
+        const currentValue: number = typeof selectedAnswer === 'number'
+          ? selectedAnswer
+          : (sliderQuestion.presetOnly && sliderQuestion.presetValues && sliderQuestion.presetValues.length > 0
+              ? sliderQuestion.presetValues[0]
+              : (sliderQuestion.min ?? 0));
         
         if (sliderQuestion.presetOnly && sliderQuestion.presetValues) {
           const presets = sliderQuestion.presetValues.sort((a: number, b: number) => a - b);

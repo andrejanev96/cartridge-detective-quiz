@@ -67,7 +67,7 @@ export const Landing: React.FC = () => {
             animate={{ opacity: 1 }}
             transition={{ delay: 1, duration: 0.6 }}
           >
-            Get your personalized Cartridge Knowledge Profile and percentile ranking delivered via email.
+            Unlock your personalized Cartridge Knowledge Profile and percentile ranking after the challenge.
           </motion.p>
         </div>
       </div>

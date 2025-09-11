@@ -56,7 +56,7 @@ export type QuestionType = Question['type'];
 
 export interface UserAnswer {
   question: Question;
-  userAnswer: any;
+  userAnswer: string | number | boolean | Record<string, string> | null;
   isCorrect: boolean;
   questionIndex: number;
 }
@@ -64,13 +64,15 @@ export interface UserAnswer {
 export interface QuizState {
   currentQuestion: number;
   score: number;
-  selectedAnswer: any;
+  selectedAnswer: string | number | boolean | Record<string, string> | null;
   userAnswers: UserAnswer[];
   streak: number;
   maxStreak: number;
   quizData: Question[];
   isQuizActive: boolean;
-  currentSection: 'landing' | 'quiz' | 'emailCapture' | 'results';
+  currentSection: 'landing' | 'quiz' | 'results';
+  resultsUnlocked?: boolean;
+  userEmail?: string;
 }
 
 export interface Tier {
@@ -92,5 +94,5 @@ export interface EmailFormData {
 
 export interface AnalyticsEvent {
   eventName: string;
-  data?: Record<string, any>;
+  data?: Record<string, unknown>;
 }

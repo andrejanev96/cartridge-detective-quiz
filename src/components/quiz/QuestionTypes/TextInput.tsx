@@ -6,12 +6,13 @@ interface TextInputProps {
   question: TextInputQuestion;
 }
 
-export const TextInput: React.FC<TextInputProps> = ({ question: _ }) => {
+export const TextInput: React.FC<TextInputProps> = () => {
   const { selectAnswer } = useQuizStore();
   const [inputValue, setInputValue] = useState('');
 
   useEffect(() => {
-    selectAnswer(inputValue.trim() !== '' ? inputValue : null);
+    const trimmed = inputValue.trim();
+    selectAnswer(trimmed !== '' ? trimmed : null);
   }, [inputValue, selectAnswer]);
 
   return (

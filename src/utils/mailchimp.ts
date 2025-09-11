@@ -2,113 +2,72 @@
 
 export const subscribeToMailChimp = async (
   email: string,
-  subscribeToBulletin: boolean,
-  quizData?: {
-    score: number;
-    tier: string;
-    accuracy: number;
-  }
+  subscribeToBulletin: boolean
 ): Promise<boolean> => {
-  console.log('Subscription request:', { email, subscribeToBulletin, quizData });
-
   // STRICT CONSENT LOGIC: Only proceed if user explicitly consented
   if (!subscribeToBulletin) {
-    console.log('User did NOT consent to newsletter - skipping MailChimp entirely');
     return true; // Return success but skip MailChimp
   }
 
-  console.log('User CONSENTED to newsletter - proceeding with MailChimp subscription');
-
-  // MailChimp iframe submission (no CORS issues)
-  const MAILCHIMP_URL = 'https://ammo.us2.list-manage.com/subscribe/post';
-  const USER_ID = '92e5fabeec50377fd6b0c666d';
-  const LIST_ID = '835c3fc179';
-  const FORM_ID = '002ec0e1f0';
-
   try {
-    // Create hidden form and iframe
+    // Just replicate exactly what your embedded form does - nothing more, nothing less
     const iframe = document.createElement('iframe');
     iframe.style.display = 'none';
-    iframe.name = 'mailchimp_frame_' + Date.now();
+    iframe.name = 'hidden_iframe_' + Date.now();
     
     const form = document.createElement('form');
     form.method = 'POST';
-    form.action = MAILCHIMP_URL;
+    form.action = 'https://ammo.us2.list-manage.com/subscribe/post?u=92e5fabeec50377fd6b0c666d&id=835c3fc179&f_id=002ec0e1f0';
     form.target = iframe.name;
     form.style.display = 'none';
 
-    // Add form fields matching MailChimp's expected format
-    const fields = {
-      u: USER_ID,
-      id: LIST_ID,
-      f_id: FORM_ID,
-      EMAIL: email,
-      // Use the hidden tags field from your form (tag ID 248403)
-      'tags': '248403',
-      // Add quiz data as merge fields (MailChimp custom fields)
-      'MERGE1': quizData?.score?.toString() || '', // Quiz Score
-      'MERGE2': quizData?.tier || '', // Quiz Tier
-      'MERGE3': quizData?.accuracy?.toString() || '', // Quiz Accuracy
-      'MERGE4': new Date().toISOString().split('T')[0], // Quiz Date
-      [`b_${USER_ID}_${LIST_ID}`]: '', // Bot field (must be empty)
-    };
+    // Only the essential fields from your embedded form
+    const emailInput = document.createElement('input');
+    emailInput.type = 'email';
+    emailInput.name = 'EMAIL';
+    emailInput.value = email;
+    form.appendChild(emailInput);
 
-    Object.entries(fields).forEach(([key, value]) => {
-      const input = document.createElement('input');
-      input.type = 'hidden';
-      input.name = key;
-      input.value = value;
-      form.appendChild(input);
-    });
+    // Tags field (exactly as in your embedded form)
+    const tagsInput = document.createElement('input');
+    tagsInput.type = 'hidden';
+    tagsInput.name = 'tags';
+    tagsInput.value = '248403';
+    form.appendChild(tagsInput);
 
-    // Add to DOM and submit
+    // Bot protection field (exactly as in your embedded form)
+    const botInput = document.createElement('input');
+    botInput.type = 'text';
+    botInput.name = 'b_92e5fabeec50377fd6b0c666d_835c3fc179';
+    botInput.value = '';
+    botInput.style.position = 'absolute';
+    botInput.style.left = '-5000px';
+    botInput.setAttribute('tabindex', '-1');
+    form.appendChild(botInput);
+
+    // Submit button (exactly as in your embedded form)
+    const submitInput = document.createElement('input');
+    submitInput.type = 'submit';
+    submitInput.name = 'subscribe';
+    submitInput.value = 'Subscribe';
+    form.appendChild(submitInput);
+
+    // Add to DOM
     document.body.appendChild(iframe);
     document.body.appendChild(form);
 
-    return new Promise((resolve) => {
-      iframe.onload = () => {
-        console.log('✅ MailChimp form submitted successfully');
-        // Clean up
-        document.body.removeChild(iframe);
-        document.body.removeChild(form);
-        resolve(true);
-      };
+    // Submit and clean up
+    form.submit();
+    
+    setTimeout(() => {
+      document.body.removeChild(iframe);
+      document.body.removeChild(form);
+    }, 3000);
 
-      iframe.onerror = () => {
-        console.error('❌ MailChimp form submission failed');
-        document.body.removeChild(iframe);
-        document.body.removeChild(form);
-        resolve(false);
-      };
-
-      // Submit the form
-      form.submit();
-    });
+    return true;
 
   } catch (error) {
-    console.error('MailChimp subscription error:', error);
     return false;
   }
 };
-
-// Send quiz results email (this would typically be done server-side)
-export const sendQuizResultsEmail = async (
-  _email: string,
-  _quizData: {
-    score: number;
-    totalQuestions: number;
-    tier: any;
-    userAnswers: any[];
-    accuracy: number;
-  }
-) => {
-  // In a real implementation, this would call your backend API
-  // which would then send a detailed email with results
-  
-  // For now, simulate the email sending
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve(true);
-    }, 1000);
-  });
-};
+// Email sending removed — results are unlocked on-screen after email entry.
