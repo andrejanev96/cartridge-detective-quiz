@@ -119,7 +119,34 @@ export const Quiz: React.FC = () => {
   }, [currentQ, isNextDisabled, selectedAnswer, handleNextQuestion]);
 
   if (!currentQ) {
-    return <div>Loading...</div>;
+    return (
+      <motion.div 
+        className="loading-container"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.3 }}
+      >
+        <motion.div 
+          className="loading-badge"
+          animate={{ 
+            rotate: [0, 360],
+            scale: [1, 1.1, 1]
+          }}
+          transition={{ 
+            rotate: { duration: 2, repeat: Infinity, ease: "linear" },
+            scale: { duration: 1.5, repeat: Infinity, ease: "easeInOut" }
+          }}
+        >
+          🎯
+        </motion.div>
+        <motion.p
+          animate={{ opacity: [0.5, 1, 0.5] }}
+          transition={{ duration: 1.5, repeat: Infinity }}
+        >
+          Loading Detective Challenge...
+        </motion.p>
+      </motion.div>
+    );
   }
 
   return (
@@ -164,8 +191,11 @@ export const Quiz: React.FC = () => {
             )}
           </div>
           <div className="progress-bar-container">
-            <div 
+            <motion.div 
               className="progress-bar"
+              initial={{ '--progress': '0%' }}
+              animate={{ '--progress': `${((currentQuestion + 1) / quizData.length) * 100}%` }}
+              transition={{ duration: 0.8, ease: "easeOut" }}
               style={{ '--progress': `${((currentQuestion + 1) / quizData.length) * 100}%` } as React.CSSProperties}
             />
           </div>
