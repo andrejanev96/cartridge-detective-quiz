@@ -38,78 +38,97 @@ export const Quiz: React.FC = () => {
     resetQuestionState();
   }, [currentQuestion, resetQuestionState]);
 
-  // Add keyboard navigation
+  // Add keyboard navigation with mobile detection
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
+      // Skip keyboard shortcuts if virtual keyboard is likely open
+      const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+      const isVirtualKeyboardOpen = isMobile && window.innerHeight < window.screen.height * 0.75;
+
+      // Allow normal text input in input fields
+      const target = e.target as HTMLElement;
+      if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA') {
+        return;
+      }
+
+      // Skip shortcuts if virtual keyboard is open
+      if (isVirtualKeyboardOpen) {
+        return;
+      }
+
       // Number keys for multiple choice
       if (e.key >= '1' && e.key <= '4' && (currentQ?.type === 'multiple-choice' || currentQ?.type === 'image-multiple-choice')) {
+        e.preventDefault();
         const answerIndex = parseInt(e.key) - 1;
         const answers = (currentQ as MultipleChoiceQuestion).answers;
         if (answerIndex < answers.length) {
           useQuizStore.getState().selectAnswer(answerIndex);
         }
       }
-      
+
       // Arrow keys for multiple choice navigation
       if ((e.key === 'ArrowUp' || e.key === 'ArrowDown') && (currentQ?.type === 'multiple-choice' || currentQ?.type === 'image-multiple-choice')) {
+        e.preventDefault();
         const answers = (currentQ as MultipleChoiceQuestion).answers;
         const currentIndex = typeof selectedAnswer === 'number' ? selectedAnswer : -1;
         let newIndex;
-        
+
         if (e.key === 'ArrowDown') {
           newIndex = currentIndex < answers.length - 1 ? currentIndex + 1 : 0;
         } else {
           newIndex = currentIndex > 0 ? currentIndex - 1 : answers.length - 1;
         }
-        
+
         useQuizStore.getState().selectAnswer(newIndex);
       }
-      
+
       // Arrow keys for slider controls
       if ((e.key === 'ArrowLeft' || e.key === 'ArrowRight') && currentQ?.type === 'slider') {
+        e.preventDefault();
         const sliderQuestion = currentQ as SliderQuestion;
         const currentValue: number = typeof selectedAnswer === 'number'
           ? selectedAnswer
           : (sliderQuestion.presetOnly && sliderQuestion.presetValues && sliderQuestion.presetValues.length > 0
               ? sliderQuestion.presetValues[0]
               : (sliderQuestion.min ?? 0));
-        
+
         if (sliderQuestion.presetOnly && sliderQuestion.presetValues) {
           const presets = sliderQuestion.presetValues.sort((a: number, b: number) => a - b);
           const currentIndex = presets.indexOf(currentValue);
           let newIndex;
-          
+
           if (e.key === 'ArrowRight') {
             newIndex = currentIndex < presets.length - 1 ? currentIndex + 1 : currentIndex;
           } else {
             newIndex = currentIndex > 0 ? currentIndex - 1 : currentIndex;
           }
-          
+
           useQuizStore.getState().selectAnswer(presets[newIndex]);
         } else {
           const step = sliderQuestion.step || 10;
           const min = sliderQuestion.min || 0;
           const max = sliderQuestion.max || 100;
           let newValue;
-          
+
           if (e.key === 'ArrowRight') {
             newValue = Math.min(max, currentValue + step);
           } else {
             newValue = Math.max(min, currentValue - step);
           }
-          
+
           useQuizStore.getState().selectAnswer(newValue);
         }
       }
-      
+
       // Spacebar for true/false toggle
       if (e.key === ' ' && currentQ?.type === 'true-false') {
         e.preventDefault();
         const newAnswer = selectedAnswer === null ? true : !selectedAnswer;
         useQuizStore.getState().selectAnswer(newAnswer);
       }
-      
+
       if (e.key === 'Enter' && !isNextDisabled) {
+        e.preventDefault();
         handleNextQuestion();
       }
     };
@@ -171,15 +190,20 @@ export const Quiz: React.FC = () => {
           </div>
         </div>
 
-        {/* Bullet Animation */}
+        {/* Bullet Animation - Optimized for mobile */}
         <AnimatePresence>
           {showBullet && (
             <>
-              {/* Muzzle Flash */}
+              {/* Muzzle Flash - Simplified for mobile */}
               <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: [0, 1, 0] }}
-                transition={{ duration: 0.2, ease: "easeOut" }}
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: [0, 1, 0], scale: [0.8, 1.2, 0.8] }}
+                transition={{
+                  duration: 0.2,
+                  ease: "easeOut",
+                  // Disable on low-end devices
+                  ...(navigator.hardwareConcurrency && navigator.hardwareConcurrency < 4 ? { duration: 0.1 } : {})
+                }}
                 style={{
                   position: 'absolute',
                   top: '50%',
@@ -190,20 +214,23 @@ export const Quiz: React.FC = () => {
                   background: 'radial-gradient(circle, #ff6b00 0%, #ff4400 50%, transparent 70%)',
                   borderRadius: '50%',
                   zIndex: 999,
+                  willChange: 'transform, opacity',
                 }}
               />
-              
-              {/* Bullet */}
+
+              {/* Bullet - Performance optimized */}
               <motion.div
                 initial={{ x: -50, y: 0, opacity: 1 }}
-                animate={{ 
+                animate={{
                   x: window.innerWidth + 50,
-                  y: 0, // Straight trajectory
+                  y: 0,
                 }}
                 exit={{ opacity: 0 }}
-                transition={{ 
+                transition={{
                   duration: 0.6,
-                  ease: "easeOut"
+                  ease: "easeOut",
+                  // Faster on mobile for better performance
+                  ...(window.innerWidth <= 768 ? { duration: 0.4 } : {})
                 }}
                 style={{
                   position: 'absolute',
@@ -211,15 +238,20 @@ export const Quiz: React.FC = () => {
                   left: 0,
                   transform: 'translateY(-50%)',
                   zIndex: 1000,
+                  willChange: 'transform',
                 }}
               >
-                {/* Bullet Shape */}
+                {/* Bullet Shape - Simplified for mobile */}
                 <div style={{
                   width: '52px',
                   height: '16px',
-                  background: 'linear-gradient(90deg, #bf9400 0%, #99161d 65%, #bf9400 100%)',
+                  background: window.innerWidth <= 768
+                    ? '#bf9400' // Solid color on mobile for performance
+                    : 'linear-gradient(90deg, #bf9400 0%, #99161d 65%, #bf9400 100%)',
                   borderRadius: '2px 10px 10px 2px',
-                  boxShadow: '0 0 12px rgba(191, 148, 0, 0.6), inset 0 1px 3px rgba(255,255,255,0.2)',
+                  boxShadow: window.innerWidth <= 768
+                    ? '0 0 6px rgba(191, 148, 0, 0.4)' // Simplified shadow on mobile
+                    : '0 0 12px rgba(191, 148, 0, 0.6), inset 0 1px 3px rgba(255,255,255,0.2)',
                   position: 'relative',
                 }}>
                   {/* Bullet Tip */}
@@ -233,31 +265,34 @@ export const Quiz: React.FC = () => {
                     borderLeft: '12px solid #bf9400',
                     borderTop: '8px solid transparent',
                     borderBottom: '8px solid transparent',
-                    filter: 'drop-shadow(0 0 3px rgba(191, 148, 0, 0.4))',
+                    filter: window.innerWidth <= 768 ? 'none' : 'drop-shadow(0 0 3px rgba(191, 148, 0, 0.4))',
                   }} />
-                  
-                  {/* Trail Effect */}
-                  <motion.div
-                    animate={{ 
-                      opacity: [0.7, 0.3, 0.7],
-                      scaleX: [0.8, 1, 0.8]
-                    }}
-                    transition={{ 
-                      duration: 0.15, 
-                      repeat: Infinity,
-                      ease: "easeInOut"
-                    }}
-                    style={{
-                      position: 'absolute',
-                      left: '-20px',
-                      top: '50%',
-                      transform: 'translateY(-50%)',
-                      width: '20px',
-                      height: '3px',
-                      background: 'linear-gradient(90deg, transparent 0%, rgba(191, 148, 0, 0.6) 100%)',
-                      borderRadius: '2px',
-                    }}
-                  />
+
+                  {/* Trail Effect - Only on desktop for performance */}
+                  {window.innerWidth > 768 && (
+                    <motion.div
+                      animate={{
+                        opacity: [0.7, 0.3, 0.7],
+                        scaleX: [0.8, 1, 0.8]
+                      }}
+                      transition={{
+                        duration: 0.15,
+                        repeat: Infinity,
+                        ease: "easeInOut"
+                      }}
+                      style={{
+                        position: 'absolute',
+                        left: '-20px',
+                        top: '50%',
+                        transform: 'translateY(-50%)',
+                        width: '20px',
+                        height: '3px',
+                        background: 'linear-gradient(90deg, transparent 0%, rgba(191, 148, 0, 0.6) 100%)',
+                        borderRadius: '2px',
+                        willChange: 'transform, opacity',
+                      }}
+                    />
+                  )}
                 </div>
               </motion.div>
             </>

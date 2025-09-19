@@ -87,6 +87,34 @@ export const Slider: React.FC<SliderProps> = ({ question }) => {
   const minValue = isPresetOnly ? presets[0] : (question.min || 0);
   const maxValue = isPresetOnly ? presets[presets.length - 1] : (question.max || 100);
 
+  const handleSliderClick = (e: React.MouseEvent<HTMLInputElement>) => {
+    if (!isPresetOnly) {
+      const rect = e.currentTarget.getBoundingClientRect();
+      const clickX = e.clientX - rect.left;
+      const percentage = clickX / rect.width;
+      const range = (question.max || 100) - (question.min || 0);
+      const newValue = Math.round((question.min || 0) + (percentage * range));
+      const clampedValue = Math.max(question.min || 0, Math.min(question.max || 100, newValue));
+      setSliderValue(clampedValue);
+    }
+  };
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    e.preventDefault();
+  };
+
+  const handleTouchMove = (e: React.TouchEvent<HTMLInputElement>) => {
+    if (!isPresetOnly) {
+      const touch = e.touches[0];
+      const rect = e.currentTarget.getBoundingClientRect();
+      const touchX = touch.clientX - rect.left;
+      const percentage = Math.max(0, Math.min(1, touchX / rect.width));
+      const range = (question.max || 100) - (question.min || 0);
+      const newValue = Math.round((question.min || 0) + (percentage * range));
+      setSliderValue(newValue);
+    }
+  };
+
   return (
     <div className="slider-container">
       {isPresetOnly ? (
@@ -98,7 +126,7 @@ export const Slider: React.FC<SliderProps> = ({ question }) => {
           Range: {question.min} - {question.max} {question.unit}
         </div>
       )}
-      
+
       {/* Only show slider for non-preset-only questions */}
       {!isPresetOnly && (
         <input
@@ -109,40 +137,49 @@ export const Slider: React.FC<SliderProps> = ({ question }) => {
           step={step}
           value={sliderValue}
           onChange={(e) => setSliderValue(parseInt(e.target.value))}
+          onClick={handleSliderClick}
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          aria-label={`Select value between ${question.min} and ${question.max} ${question.unit}`}
         />
       )}
-      
+
       <div className="slider-controls">
-        <button 
+        <button
           type="button"
           className="slider-control-btn"
           onClick={handleDecrease}
           disabled={sliderValue <= minValue}
           aria-label="Decrease value"
+          onTouchStart={(e) => e.preventDefault()}
         >
           −
         </button>
-        <div className="slider-value">
+        <div className="slider-value" aria-live="polite">
           {sliderValue} {question.unit}
         </div>
-        <button 
+        <button
           type="button"
           className="slider-control-btn"
           onClick={handleIncrease}
           disabled={sliderValue >= maxValue}
           aria-label="Increase value"
+          onTouchStart={(e) => e.preventDefault()}
         >
           +
         </button>
       </div>
-      
-      <div className="slider-presets">
+
+      <div className="slider-presets" role="group" aria-label="Preset values">
         {presets.map((preset) => (
           <button
             key={preset}
             type="button"
             className={`slider-preset-btn ${sliderValue === preset ? 'active' : ''}`}
             onClick={() => setSliderValue(preset)}
+            onTouchStart={(e) => e.preventDefault()}
+            aria-label={`Set value to ${preset} ${question.unit}`}
+            aria-pressed={sliderValue === preset}
           >
             {preset}
           </button>
