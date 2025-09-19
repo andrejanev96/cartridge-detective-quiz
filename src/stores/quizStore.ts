@@ -48,6 +48,7 @@ type QuestionsFile = {
 };
 
 interface QuizStore extends QuizState {
+  isLoading: boolean;
   // Actions
   startQuiz: () => void;
   loadQuestions: () => Promise<void>;
@@ -76,15 +77,24 @@ export const useQuizStore = create<QuizStore>((set, get) => ({
   currentSection: 'landing',
   resultsUnlocked: false,
   userEmail: undefined,
+  isLoading: false,
 
   // Actions
   startQuiz: async () => {
+    set({ isLoading: true });
     trackQuizEvents.quizStarted();
     await get().loadQuestions();
-    set({ currentSection: 'quiz', isQuizActive: true, userAnswers: [] });
+    set({
+      currentSection: 'quiz',
+      isQuizActive: true,
+      userAnswers: [],
+      isLoading: false
+    });
   },
 
   loadQuestions: async () => {
+    // Simulate small delay for smooth loading experience
+    await new Promise(resolve => setTimeout(resolve, 300));
     get().generateQuiz(questionsData as unknown as QuestionsFile);
   },
 

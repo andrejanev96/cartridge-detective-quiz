@@ -3,11 +3,14 @@ import { AnimatePresence } from 'framer-motion';
 import { Landing } from '@/components/sections/Landing';
 import { Quiz } from '@/components/sections/Quiz';
 import { Results } from '@/components/sections/Results';
+import { ErrorBoundary } from '@/components/ui/ErrorBoundary';
+import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
+import { NotFound } from '@/components/ui/NotFound';
 import { useQuizStore } from '@/stores/quizStore';
 import { trackEvent } from '@/utils/analytics';
 
 function App() {
-  const { currentSection } = useQuizStore();
+  const { currentSection, isLoading } = useQuizStore();
 
   useEffect(() => {
     // Track page view on load
@@ -18,6 +21,10 @@ function App() {
   }, []);
 
   const renderCurrentSection = () => {
+    if (isLoading) {
+      return <LoadingSpinner />;
+    }
+
     switch (currentSection) {
       case 'landing':
         return <Landing />;
@@ -26,16 +33,18 @@ function App() {
       case 'results':
         return <Results />;
       default:
-        return <Landing />;
+        return <NotFound />;
     }
   };
 
   return (
-    <div className="App">
-      <AnimatePresence mode="wait">
-        {renderCurrentSection()}
-      </AnimatePresence>
-    </div>
+    <ErrorBoundary>
+      <div className="App">
+        <AnimatePresence mode="wait">
+          {renderCurrentSection()}
+        </AnimatePresence>
+      </div>
+    </ErrorBoundary>
   );
 }
 
