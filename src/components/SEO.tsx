@@ -2,7 +2,14 @@ import { useEffect } from 'react';
 
 export const SEO = () => {
   useEffect(() => {
-    const baseUrl = import.meta.env.VITE_APP_URL || window.location.origin;
+    // Use production URL for OG tags, or fallback to current origin
+    const isProduction = import.meta.env.PROD;
+    const currentOrigin = window.location.origin + window.location.pathname.replace(/\/$/, '');
+
+    const baseUrl = isProduction
+      ? (import.meta.env.VITE_APP_URL || currentOrigin)
+      : currentOrigin;
+
     const fullUrl = baseUrl;
     const ogImageUrl = `${baseUrl}/og-image.png`;
 
