@@ -100,7 +100,8 @@ export const QuestionRenderer: React.FC<QuestionRendererProps> = ({ question }) 
               <motion.img
                 src={question.image}
                 alt="Cartridge identification"
-                loading="lazy"
+                loading={currentQuestion === 0 ? 'eager' : 'lazy'}
+                fetchPriority={currentQuestion === 0 ? 'high' : 'auto'}
                 decoding="async"
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}

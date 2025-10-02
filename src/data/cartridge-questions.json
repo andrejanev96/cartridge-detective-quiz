@@ -5,7 +5,7 @@
       "title": "Weight Weight… Don't Tell Me!",
       "category": "Cartridge Identification",
       "question": "How heavy is its bullet, probably?",
-      "image": "assets/images/cartridges/question1.jpg",
+      "image": "assets/images/cartridges/question1.webp",
       "answers": [
         "185, 200, or 230 grains",
         "165, 180, or 200 grains", 
@@ -20,7 +20,7 @@
       "title": "Browning's Bright Ideas",
       "category": "Historical Development",
       "question": "In which order were the following Automatic Colt Pistol cartridges designed?",
-      "image": "assets/images/cartridges/question2.jpg",
+      "image": "assets/images/cartridges/question2.webp",
       "answers": [
         "32 ACP, 380 ACP, 45 ACP",
         "45 ACP, 380 ACP, 32 ACP",
@@ -35,7 +35,7 @@
       "title": "1963",
       "category": "Historical Events",
       "question": "",
-      "image": "assets/images/cartridges/question3.jpg",
+      "image": "assets/images/cartridges/question3.webp",
       "answers": [
         "6.5x52mm Carcano",
         "7.92x57mm Mauser",
@@ -50,7 +50,7 @@
       "title": "\"I never miss.\"",
       "category": "Film and Pop Culture",
       "question": "",
-      "image": "assets/images/cartridges/question4.jpg",
+      "image": "assets/images/cartridges/question4.webp",
       "answers": [
         "455 Webley",
         "32 ACP",
@@ -65,7 +65,7 @@
       "title": "A Garand Old Time",
       "category": "Military History",
       "question": "How heavy is its bullet, probably?",
-      "image": "assets/images/cartridges/question5.jpg",
+      "image": "assets/images/cartridges/question5.webp",
       "answers": [
         "150, 165, or 180 grains",
         "120, 130 or 140 grains",
@@ -82,7 +82,7 @@
       "title": "No Pressure",
       "category": "Technical Specifications",
       "question": "Which of the following *does not* have official +P specs?",
-      "image": "assets/images/cartridges/question6.jpg",
+      "image": "assets/images/cartridges/question6.webp",
       "answers": [
         "9mm",
         "38 Special",
@@ -97,7 +97,7 @@
       "title": "Signed, SEALed, Delivered",
       "category": "Military Applications",
       "question": "",
-      "image": "assets/images/cartridges/question7.jpg",
+      "image": "assets/images/cartridges/question7.webp",
       "answers": [
         "308 Winchester",
         "300 Winchester Magnum",
@@ -112,7 +112,7 @@
       "title": "Elmer's Pride",
       "category": "Ballistics",
       "question": "What is its advertised muzzle velocity?",
-      "image": "assets/images/cartridges/question8.jpg",
+      "image": "assets/images/cartridges/question8.webp",
       "presetOnly": true,
       "presetValues": [1050, 1125, 1235, 1315, 1420, 1500],
       "unit": "fps",
@@ -124,7 +124,7 @@
       "title": "Let's Get It Started",
       "category": "Historical Events",
       "question": "",
-      "image": "assets/images/cartridges/question9.jpg",
+      "image": "assets/images/cartridges/question9.webp",
       "answers": [
         "25 ACP",
         "32 ACP",
@@ -139,7 +139,7 @@
       "title": "Because the South Atlantic Doesn't Matter",
       "category": "NATO Standards",
       "question": "Which of the following doesn't belong?",
-      "image": "assets/images/cartridges/question10.jpg",
+      "image": "assets/images/cartridges/question10.webp",
       "answers": [
         "12.7x99mm",
         "5.56x45mm",
@@ -154,7 +154,7 @@
       "title": "This Is Going to Sting",
       "category": "Wildcat Cartridges",
       "question": "Which of the following doesn't belong?",
-      "image": "assets/images/cartridges/question11.jpg",
+      "image": "assets/images/cartridges/question11.webp",
       "answers": [
         "17 Mosquito",
         "22 Hornet",
@@ -171,7 +171,7 @@
       "title": "The Genuine ARticle",
       "category": "Ballistics",
       "question": "What is its muzzle velocity out of a 20\" barrel?",
-      "image": "assets/images/cartridges/question12.jpg",
+      "image": "assets/images/cartridges/question12.webp",
       "presetOnly": true,
       "presetValues": [2750, 2825, 2960, 3060, 3270, 3300, 3425],
       "unit": "fps",
@@ -183,7 +183,7 @@
       "title": "Do You Feel Lucky?",
       "category": "Film and Pop Culture",
       "question": "",
-      "image": "assets/images/cartridges/question13.jpg",
+      "image": "assets/images/cartridges/question13.webp",
       "answers": [
         "5.7×15mmR",
         "10.9x24mmR",
@@ -198,7 +198,7 @@
       "title": "AR You Feeling It?",
       "category": "Platform Compatibility",
       "question": "Which of the following doesn't belong?",
-      "image": "assets/images/cartridges/question14.jpg",
+      "image": "assets/images/cartridges/question14.webp",
       "answers": [
         "22 Long Rifle",
         "6.5mm Grendel",
@@ -213,7 +213,7 @@
       "title": "A Snappy Comeback",
       "category": "Historical Firearms",
       "question": "",
-      "image": "assets/images/cartridges/question15.jpg",
+      "image": "assets/images/cartridges/question15.webp",
       "answers": [
         "9x19mm Parabellum",
         "45 ACP",

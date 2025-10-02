@@ -324,11 +324,11 @@ body {
 .quiz-content-wrapper {
   display: flex;
   flex-direction: column;
-  min-height: 450px; /* Minimal consistent height */
+  min-height: auto;
 }
 
 .question-content-area {
-  flex: 1;
+  flex: 0;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
@@ -353,8 +353,8 @@ body {
 }
 
 .question-answers-area {
-  flex: 1;
-  min-height: 200px; /* Keep answers area consistent */
+  flex: 0;
+  min-height: auto;
 }
 
 .quiz-navigation {
@@ -502,7 +502,7 @@ body {
   }
 
   .quiz-content-wrapper {
-    min-height: calc(100vh - 160px);
+    min-height: auto; /* Let content determine height naturally */
   }
 
   .question-answers-area {
