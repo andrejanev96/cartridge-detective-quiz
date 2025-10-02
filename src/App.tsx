@@ -6,6 +6,7 @@ import { Results } from '@/components/sections/Results';
 import { ErrorBoundary } from '@/components/ui/ErrorBoundary';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 import { NotFound } from '@/components/ui/NotFound';
+import { SEO } from '@/components/SEO';
 import { useQuizStore } from '@/stores/quizStore';
 import { trackEvent } from '@/utils/analytics';
 
@@ -39,6 +40,7 @@ function App() {
 
   return (
     <ErrorBoundary>
+      <SEO />
       <div className="App">
         <AnimatePresence mode="wait">
           {renderCurrentSection()}
