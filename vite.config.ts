@@ -30,7 +30,7 @@ const injectOGTags = () => {
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  base: '/',
+  base: '/cartridge-detective-quiz/',
   plugins: [react(), injectOGTags()],
   server: {
     headers: {
